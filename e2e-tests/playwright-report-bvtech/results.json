@@ -1,0 +1,1365 @@
+{
+  "config": {
+    "configFile": "D:\\PLAYRIGHT\\e2e-tests\\playwright.bvtech.config.ts",
+    "rootDir": "D:/PLAYRIGHT/e2e-tests/apps/bvtech/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": "D:\\PLAYRIGHT\\e2e-tests\\apps\\bvtech\\global-setup.ts",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/PLAYRIGHT/e2e-tests/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "bvtech-public",
+        "name": "bvtech-public",
+        "testDir": "D:/PLAYRIGHT/e2e-tests/apps/bvtech/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/e2e-01-signup.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/PLAYRIGHT/e2e-tests/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "bvtech-login-flow",
+        "name": "bvtech-login-flow",
+        "testDir": "D:/PLAYRIGHT/e2e-tests/apps/bvtech/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/e2e-02-login-navigation.spec.ts",
+          "**/e2e-05-admin-login.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/PLAYRIGHT/e2e-tests/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "bvtech-admin",
+        "name": "bvtech-admin",
+        "testDir": "D:/PLAYRIGHT/e2e-tests/apps/bvtech/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/e2e-06-admin-users.spec.ts",
+          "**/e2e-07-admin-packs.spec.ts",
+          "**/e2e-08-admin-payments.spec.ts",
+          "**/e2e-09-admin-contacts.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/PLAYRIGHT/e2e-tests/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "bvtech-client",
+        "name": "bvtech-client",
+        "testDir": "D:/PLAYRIGHT/e2e-tests/apps/bvtech/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/e2e-03-profile.spec.ts",
+          "**/e2e-04-dashboard.spec.ts"
+        ],
+        "timeout": 60000
+      },
+      {
+        "outputDir": "D:/PLAYRIGHT/e2e-tests/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "bvtech-regression",
+        "name": "bvtech-regression",
+        "testDir": "D:/PLAYRIGHT/e2e-tests/apps/bvtech/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/regression.spec.ts"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report-bvtech",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "playwright-report-bvtech/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.59.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "e2e-01-signup.spec.ts",
+      "file": "e2e-01-signup.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E 01 — Inscription + Accès Dashboard (CRITIQUE)",
+          "file": "e2e-01-signup.spec.ts",
+          "line": 35,
+          "column": 6,
+          "specs": [
+            {
+              "title": "01.1 — La page d'inscription est accessible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-public",
+                  "projectName": "bvtech-public",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "12f3ebe89edc25481ba8-ade2e1c68db7f2aacf91",
+              "file": "e2e-01-signup.spec.ts",
+              "line": 37,
+              "column": 7
+            },
+            {
+              "title": "01.2 — Le formulaire contient le champ Nom",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-public",
+                  "projectName": "bvtech-public",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "12f3ebe89edc25481ba8-1399f48ebedbfa247951",
+              "file": "e2e-01-signup.spec.ts",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "01.3 — Le formulaire contient le champ Email",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-public",
+                  "projectName": "bvtech-public",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "12f3ebe89edc25481ba8-31e308e53d1d56e991bc",
+              "file": "e2e-01-signup.spec.ts",
+              "line": 65,
+              "column": 7
+            },
+            {
+              "title": "01.4 — Le formulaire contient les champs Mot de passe et Confirmation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-public",
+                  "projectName": "bvtech-public",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "12f3ebe89edc25481ba8-9a863dc14f0e76749b4c",
+              "file": "e2e-01-signup.spec.ts",
+              "line": 74,
+              "column": 7
+            },
+            {
+              "title": "01.5 — Le reCAPTCHA est présent sur le formulaire",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-public",
+                  "projectName": "bvtech-public",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "12f3ebe89edc25481ba8-046d83ef81ca17efb958",
+              "file": "e2e-01-signup.spec.ts",
+              "line": 85,
+              "column": 7
+            },
+            {
+              "title": "01.6 — Les champs du formulaire sont remplissables",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-public",
+                  "projectName": "bvtech-public",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "12f3ebe89edc25481ba8-14525cb4f7b0c137465c",
+              "file": "e2e-01-signup.spec.ts",
+              "line": 99,
+              "column": 7
+            },
+            {
+              "title": "01.7 — Lien vers la page login visible depuis l'inscription",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-public",
+                  "projectName": "bvtech-public",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "12f3ebe89edc25481ba8-bb0704bb9efd218afd77",
+              "file": "e2e-01-signup.spec.ts",
+              "line": 124,
+              "column": 7
+            },
+            {
+              "title": "01.8 — Navigation vers le signup depuis la page login",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-public",
+                  "projectName": "bvtech-public",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "12f3ebe89edc25481ba8-d259be462afbcfef7035",
+              "file": "e2e-01-signup.spec.ts",
+              "line": 135,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e-02-login-navigation.spec.ts",
+      "file": "e2e-02-login-navigation.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E 02 — Login utilisateur + Navigation (CRITIQUE)",
+          "file": "e2e-02-login-navigation.spec.ts",
+          "line": 40,
+          "column": 6,
+          "specs": [
+            {
+              "title": "02.1 — La page login est accessible et contient le formulaire",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "15d7db9a5bc98f1e52f6-e91fb83aa3b6a6d94d2c",
+              "file": "e2e-02-login-navigation.spec.ts",
+              "line": 42,
+              "column": 7
+            },
+            {
+              "title": "02.2 — Connexion réussie avec identifiants valides",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "15d7db9a5bc98f1e52f6-6f052350bed8cce5ac50",
+              "file": "e2e-02-login-navigation.spec.ts",
+              "line": 54,
+              "column": 7
+            },
+            {
+              "title": "02.3 — Connexion échouée avec mauvais mot de passe",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "15d7db9a5bc98f1e52f6-5a6b8b0f41da5cc70254",
+              "file": "e2e-02-login-navigation.spec.ts",
+              "line": 66,
+              "column": 7
+            },
+            {
+              "title": "02.4 — Connexion échouée avec email inexistant",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "15d7db9a5bc98f1e52f6-410059c6226ce1bf1075",
+              "file": "e2e-02-login-navigation.spec.ts",
+              "line": 77,
+              "column": 7
+            },
+            {
+              "title": "02.5 — Navigation vers le profil après connexion",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "15d7db9a5bc98f1e52f6-0bbce449571b88d1637b",
+              "file": "e2e-02-login-navigation.spec.ts",
+              "line": 88,
+              "column": 7
+            },
+            {
+              "title": "02.6 — Navigation vers le plan/abonnement après connexion",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "15d7db9a5bc98f1e52f6-f24ce3e9a76227593ddb",
+              "file": "e2e-02-login-navigation.spec.ts",
+              "line": 109,
+              "column": 7
+            },
+            {
+              "title": "02.7 — Le sidebar/menu de navigation est visible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "15d7db9a5bc98f1e52f6-4365a4f1525925051861",
+              "file": "e2e-02-login-navigation.spec.ts",
+              "line": 130,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e-05-admin-login.spec.ts",
+      "file": "e2e-05-admin-login.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E 05 — Login Admin + Accès Dashboard (CRITIQUE)",
+          "file": "e2e-05-admin-login.spec.ts",
+          "line": 28,
+          "column": 6,
+          "specs": [
+            {
+              "title": "05.1 — Connexion admin réussie avec identifiants valides",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e092c242d2b44d3fb3bf-fb6242e95bec36c688b1",
+              "file": "e2e-05-admin-login.spec.ts",
+              "line": 30,
+              "column": 7
+            },
+            {
+              "title": "05.2 — Accès au dashboard admin après connexion",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e092c242d2b44d3fb3bf-3c4e74802e5a8a589263",
+              "file": "e2e-05-admin-login.spec.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "05.3 — Les sections admin sont accessibles (sidebar)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e092c242d2b44d3fb3bf-4240d2dcf88430e2ee22",
+              "file": "e2e-05-admin-login.spec.ts",
+              "line": 63,
+              "column": 7
+            },
+            {
+              "title": "05.4 — Les KPIs admin sont visibles",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-login-flow",
+                  "projectName": "bvtech-login-flow",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "e092c242d2b44d3fb3bf-9d86eff7d15fe6733a4f",
+              "file": "e2e-05-admin-login.spec.ts",
+              "line": 78,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e-06-admin-users.spec.ts",
+      "file": "e2e-06-admin-users.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E 06 — Gestion utilisateurs (ADMIN, CRITIQUE)",
+          "file": "e2e-06-admin-users.spec.ts",
+          "line": 28,
+          "column": 6,
+          "specs": [
+            {
+              "title": "06.1 — Accéder à la liste des utilisateurs",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "6b150caca2119596982b-8f49c4570b9a15875efd",
+              "file": "e2e-06-admin-users.spec.ts",
+              "line": 30,
+              "column": 7
+            },
+            {
+              "title": "06.2 — La liste contient au moins un utilisateur",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "6b150caca2119596982b-e54303e91a1e3a758d42",
+              "file": "e2e-06-admin-users.spec.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "06.3 — Modifier un utilisateur et sauvegarder",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "6b150caca2119596982b-dc25ce1f588400b5f334",
+              "file": "e2e-06-admin-users.spec.ts",
+              "line": 68,
+              "column": 7
+            },
+            {
+              "title": "06.4 — Rechercher un utilisateur",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "6b150caca2119596982b-13b05319ca385716840d",
+              "file": "e2e-06-admin-users.spec.ts",
+              "line": 96,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e-07-admin-packs.spec.ts",
+      "file": "e2e-07-admin-packs.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E 07 — Gestion des packs (IMPORTANT)",
+          "file": "e2e-07-admin-packs.spec.ts",
+          "line": 27,
+          "column": 6,
+          "specs": [
+            {
+              "title": "07.1 — Accéder à la liste des packs",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "2c9a247852cf20c38f9d-f78cf01612353fc80623",
+              "file": "e2e-07-admin-packs.spec.ts",
+              "line": 29,
+              "column": 7
+            },
+            {
+              "title": "07.2 — La liste contient au moins un pack",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "2c9a247852cf20c38f9d-e0132bbd23fa28f5a6a8",
+              "file": "e2e-07-admin-packs.spec.ts",
+              "line": 47,
+              "column": 7
+            },
+            {
+              "title": "07.3 — Modifier un pack et sauvegarder",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "2c9a247852cf20c38f9d-1e5e805d773ecfb4c7b0",
+              "file": "e2e-07-admin-packs.spec.ts",
+              "line": 67,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e-08-admin-payments.spec.ts",
+      "file": "e2e-08-admin-payments.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E 08 — Consultation des paiements (CRITIQUE)",
+          "file": "e2e-08-admin-payments.spec.ts",
+          "line": 27,
+          "column": 6,
+          "specs": [
+            {
+              "title": "08.1 — Accéder à la liste des paiements",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "dfc94e36dd7a6046d241-4721635723e15d05c43f",
+              "file": "e2e-08-admin-payments.spec.ts",
+              "line": 29,
+              "column": 7
+            },
+            {
+              "title": "08.2 — Consulter les détails d'un paiement",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "dfc94e36dd7a6046d241-9c1bb3173bdc51c5e9f1",
+              "file": "e2e-08-admin-payments.spec.ts",
+              "line": 47,
+              "column": 7
+            },
+            {
+              "title": "08.3 — Vérifier que le montant est affiché",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "dfc94e36dd7a6046d241-a64af122215797e7e151",
+              "file": "e2e-08-admin-payments.spec.ts",
+              "line": 69,
+              "column": 7
+            },
+            {
+              "title": "08.4 — Vérifier que le statut est affiché",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "dfc94e36dd7a6046d241-5907fd25646cd43a0399",
+              "file": "e2e-08-admin-payments.spec.ts",
+              "line": 89,
+              "column": 7
+            },
+            {
+              "title": "08.5 — Vérifier que l'ID/référence est affiché",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "dfc94e36dd7a6046d241-0069f2e7f074233baff4",
+              "file": "e2e-08-admin-payments.spec.ts",
+              "line": 109,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e-09-admin-contacts.spec.ts",
+      "file": "e2e-09-admin-contacts.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E 09 — Gestion des contacts (SECONDAIRE)",
+          "file": "e2e-09-admin-contacts.spec.ts",
+          "line": 28,
+          "column": 6,
+          "specs": [
+            {
+              "title": "09.1 — Accéder à la liste des contacts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "a1ed5111b16d694ca144-62421c16bc413bc5a870",
+              "file": "e2e-09-admin-contacts.spec.ts",
+              "line": 30,
+              "column": 7
+            },
+            {
+              "title": "09.2 — Rechercher un message dans les contacts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "a1ed5111b16d694ca144-e85425056c8c774c9947",
+              "file": "e2e-09-admin-contacts.spec.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "09.3 — Navigation par pagination",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "a1ed5111b16d694ca144-da55c0784a96335305f2",
+              "file": "e2e-09-admin-contacts.spec.ts",
+              "line": 72,
+              "column": 7
+            },
+            {
+              "title": "09.4 — La liste des contacts affiche des données",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-admin",
+                  "projectName": "bvtech-admin",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "a1ed5111b16d694ca144-bb297b590a0393b8c2a7",
+              "file": "e2e-09-admin-contacts.spec.ts",
+              "line": 98,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e-03-profile.spec.ts",
+      "file": "e2e-03-profile.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E 03 — Gestion du profil utilisateur (CRITIQUE)",
+          "file": "e2e-03-profile.spec.ts",
+          "line": 35,
+          "column": 6,
+          "specs": [
+            {
+              "title": "03.1 — Se connecter et accéder au profil",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-client",
+                  "projectName": "bvtech-client",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bd9e07b87b6dcbf76ea5-09db8823316daf8006d4",
+              "file": "e2e-03-profile.spec.ts",
+              "line": 37,
+              "column": 7
+            },
+            {
+              "title": "03.2 — Modifier le nom et sauvegarder",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-client",
+                  "projectName": "bvtech-client",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bd9e07b87b6dcbf76ea5-7bfa1140402ed8726baf",
+              "file": "e2e-03-profile.spec.ts",
+              "line": 54,
+              "column": 7
+            },
+            {
+              "title": "03.3 — Vérifier la persistance des données après modification",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-client",
+                  "projectName": "bvtech-client",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bd9e07b87b6dcbf76ea5-926ae5bc0ece422ea8f2",
+              "file": "e2e-03-profile.spec.ts",
+              "line": 78,
+              "column": 7
+            },
+            {
+              "title": "03.4 — Les informations utilisateur sont affichées",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-client",
+                  "projectName": "bvtech-client",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bd9e07b87b6dcbf76ea5-a45d7c4ecc0743ff67bc",
+              "file": "e2e-03-profile.spec.ts",
+              "line": 99,
+              "column": 7
+            },
+            {
+              "title": "03.5 — L'email affiché correspond au compte connecté",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-client",
+                  "projectName": "bvtech-client",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bd9e07b87b6dcbf76ea5-c50a61c3d482085f5edd",
+              "file": "e2e-03-profile.spec.ts",
+              "line": 116,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "e2e-04-dashboard.spec.ts",
+      "file": "e2e-04-dashboard.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "E2E 04 — Dashboard utilisateur (IMPORTANT)",
+          "file": "e2e-04-dashboard.spec.ts",
+          "line": 33,
+          "column": 6,
+          "specs": [
+            {
+              "title": "04.1 — Le dashboard se charge correctement après connexion",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-client",
+                  "projectName": "bvtech-client",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bcf98dbb0d6526f52ff0-f85f2a4127ede07fcb3e",
+              "file": "e2e-04-dashboard.spec.ts",
+              "line": 35,
+              "column": 7
+            },
+            {
+              "title": "04.2 — Les KPIs sont visibles sur le dashboard",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-client",
+                  "projectName": "bvtech-client",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bcf98dbb0d6526f52ff0-3e5d494a1cb74f6ce19b",
+              "file": "e2e-04-dashboard.spec.ts",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "04.3 — La section projets est visible (vide si aucun projet)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-client",
+                  "projectName": "bvtech-client",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bcf98dbb0d6526f52ff0-1e76b5aa369b35bccce5",
+              "file": "e2e-04-dashboard.spec.ts",
+              "line": 67,
+              "column": 7
+            },
+            {
+              "title": "04.4 — Un graphique est affiché sur le dashboard",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-client",
+                  "projectName": "bvtech-client",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bcf98dbb0d6526f52ff0-655253b4aa36a49a5b21",
+              "file": "e2e-04-dashboard.spec.ts",
+              "line": 84,
+              "column": 7
+            },
+            {
+              "title": "04.5 — Le titre/heading du dashboard est affiché",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-client",
+                  "projectName": "bvtech-client",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "bcf98dbb0d6526f52ff0-51e84f3d70a56fafd4a0",
+              "file": "e2e-04-dashboard.spec.ts",
+              "line": 99,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "regression.spec.ts",
+      "file": "regression.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "RÉGRESSION — Scénarios critiques BV Tech",
+          "file": "regression.spec.ts",
+          "line": 40,
+          "column": 6,
+          "specs": [
+            {
+              "title": "REG.01 — Formulaire inscription accessible et champs présents",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-regression",
+                  "projectName": "bvtech-regression",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "9dc370239c4a30f174fb-bb79b857c318da2702ac",
+              "file": "regression.spec.ts",
+              "line": 45,
+              "column": 7
+            },
+            {
+              "title": "REG.02 — Login utilisateur avec compte pré-créé",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-regression",
+                  "projectName": "bvtech-regression",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "9dc370239c4a30f174fb-20af84cb61f4865b2d55",
+              "file": "regression.spec.ts",
+              "line": 68,
+              "column": 7
+            },
+            {
+              "title": "REG.03 — Login admin",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-regression",
+                  "projectName": "bvtech-regression",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "9dc370239c4a30f174fb-2c8d29728063d281625a",
+              "file": "regression.spec.ts",
+              "line": 80,
+              "column": 7
+            },
+            {
+              "title": "REG.04 — Accès dashboard utilisateur",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-regression",
+                  "projectName": "bvtech-regression",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "9dc370239c4a30f174fb-cd037665cc68bbcdc17d",
+              "file": "regression.spec.ts",
+              "line": 92,
+              "column": 7
+            },
+            {
+              "title": "REG.05 — Modification profil utilisateur",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-regression",
+                  "projectName": "bvtech-regression",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "9dc370239c4a30f174fb-ef586b8524907a3484dd",
+              "file": "regression.spec.ts",
+              "line": 108,
+              "column": 7
+            },
+            {
+              "title": "REG.06 — Gestion utilisateurs admin",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-regression",
+                  "projectName": "bvtech-regression",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "9dc370239c4a30f174fb-3cf68fd75347b2b34218",
+              "file": "regression.spec.ts",
+              "line": 127,
+              "column": 7
+            },
+            {
+              "title": "REG.07 — Consultation paiements admin",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-regression",
+                  "projectName": "bvtech-regression",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "9dc370239c4a30f174fb-29a5d7d2cfe73432ad95",
+              "file": "regression.spec.ts",
+              "line": 148,
+              "column": 7
+            },
+            {
+              "title": "REG.08 — Accès dashboard admin",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "bvtech-regression",
+                  "projectName": "bvtech-regression",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "9dc370239c4a30f174fb-f87731af18145611ee0f",
+              "file": "regression.spec.ts",
+              "line": 166,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-04-22T08:15:40.013Z",
+    "duration": 115.21199999999999,
+    "expected": 0,
+    "skipped": 53,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

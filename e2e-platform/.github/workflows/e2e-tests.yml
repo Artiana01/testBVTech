@@ -1,0 +1,205 @@
+name: E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  # Manual trigger with environment selection
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: staging
+        type: choice
+        options: [dev, staging, prod]
+      app_filter:
+        description: 'Run only specific app tests (leave empty for all)'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  # ─── Install & cache dependencies ──────────────────────────────
+  install:
+    name: Install dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: e2e-platform/package.json
+
+      - name: Install npm packages
+        working-directory: e2e-platform
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        id: cache-browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('e2e-platform/package-lock.json') }}
+
+      - name: Install Playwright browsers
+        if: steps.cache-browsers.outputs.cache-hit != 'true'
+        working-directory: e2e-platform
+        run: npx playwright install --with-deps
+
+  # ─── E-commerce tests ─────────────────────────────────────────
+  test-ecommerce:
+    name: E-commerce Tests
+    needs: install
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.app_filter == '' || github.event.inputs.app_filter == 'ecommerce' }}
+    env:
+      TEST_ENV: ${{ github.event.inputs.environment || 'staging' }}
+      BASE_URL_SHOP1: ${{ secrets.BASE_URL_SHOP1 }}
+      SHOP1_USER_EMAIL: ${{ secrets.SHOP1_USER_EMAIL }}
+      SHOP1_USER_PASSWORD: ${{ secrets.SHOP1_USER_PASSWORD }}
+      CI: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: e2e-platform/package.json
+
+      - name: Restore Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('e2e-platform/package-lock.json') }}
+
+      - name: Install deps
+        working-directory: e2e-platform
+        run: npm ci
+
+      - name: Run e-commerce tests
+        working-directory: e2e-platform
+        run: npx playwright test --grep @ecommerce
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-ecommerce
+          path: e2e-platform/playwright-report/
+          retention-days: 14
+
+  # ─── SaaS tests ───────────────────────────────────────────────
+  test-saas:
+    name: SaaS Tests
+    needs: install
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.app_filter == '' || github.event.inputs.app_filter == 'saas' }}
+    env:
+      TEST_ENV: ${{ github.event.inputs.environment || 'staging' }}
+      BASE_URL_SAAS1: ${{ secrets.BASE_URL_SAAS1 }}
+      SAAS1_USER_EMAIL: ${{ secrets.SAAS1_USER_EMAIL }}
+      SAAS1_USER_PASSWORD: ${{ secrets.SAAS1_USER_PASSWORD }}
+      CI: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: e2e-platform/package.json
+
+      - name: Restore Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('e2e-platform/package-lock.json') }}
+
+      - name: Install deps
+        working-directory: e2e-platform
+        run: npm ci
+
+      - name: Run SaaS tests
+        working-directory: e2e-platform
+        run: npx playwright test --grep @saas
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-saas
+          path: e2e-platform/playwright-report/
+          retention-days: 14
+
+  # ─── Vitrine tests ────────────────────────────────────────────
+  test-vitrine:
+    name: Vitrine Tests
+    needs: install
+    runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.app_filter == '' || github.event.inputs.app_filter == 'vitrine' }}
+    env:
+      TEST_ENV: ${{ github.event.inputs.environment || 'staging' }}
+      BASE_URL_VITRINE1: ${{ secrets.BASE_URL_VITRINE1 }}
+      CI: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: e2e-platform/package.json
+
+      - name: Restore Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('e2e-platform/package-lock.json') }}
+
+      - name: Install deps
+        working-directory: e2e-platform
+        run: npm ci
+
+      - name: Run vitrine tests
+        working-directory: e2e-platform
+        run: npx playwright test --grep @vitrine
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-vitrine
+          path: e2e-platform/playwright-report/
+          retention-days: 14
+
+  # ─── Merge all reports ────────────────────────────────────────
+  merge-reports:
+    name: Merge & Publish Reports
+    needs: [test-ecommerce, test-saas, test-vitrine]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Download all reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: report-*
+          merge-multiple: true
+          path: all-reports/
+
+      - name: Upload merged report
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-report-merged
+          path: all-reports/
+          retention-days: 30

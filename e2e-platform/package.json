@@ -1,0 +1,28 @@
+{
+  "name": "e2e-platform",
+  "version": "1.0.0",
+  "description": "Multi-app E2E test platform with Playwright",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:ecommerce": "playwright test --grep @ecommerce",
+    "test:saas": "playwright test --grep @saas",
+    "test:vitrine": "playwright test --grep @vitrine",
+    "test:chromium": "playwright test --project=*chromium*",
+    "test:mobile": "playwright test --project=*mobile*",
+    "test:dev": "TEST_ENV=dev playwright test",
+    "test:staging": "TEST_ENV=staging playwright test",
+    "test:prod": "TEST_ENV=prod playwright test",
+    "test:ci": "CI=true playwright test",
+    "report": "playwright show-report playwright-report",
+    "codegen": "playwright codegen"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.0"
+  }
+}

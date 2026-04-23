@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BV Tech — Interface de tests E2E</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0f1117;
+      --surface:   #1a1d27;
+      --surface2:  #22263a;
+      --border:    #2e3349;
+      --accent:    #6366f1;
+      --accent-h:  #818cf8;
+      --pass:      #22c55e;
+      --fail:      #ef4444;
+      --warn:      #f59e0b;
+      --info:      #94a3b8;
+      --summary:   #e2e8f0;
+      --text:      #e2e8f0;
+      --text-dim:  #64748b;
+      --radius:    10px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    header .logo {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent-h));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    header .subtitle {
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+
+    header .status-dot {
+      margin-left: auto;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      transition: background 0.3s;
+    }
+    header .status-dot.running { background: var(--warn); animation: pulse 1s infinite; }
+    header .status-dot.connected { background: var(--pass); }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 0;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* ── Panneau gauche ── */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+    }
+
+    .test-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .test-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      user-select: none;
+    }
+    .test-item:hover { border-color: var(--accent); }
+    .test-item input[type="checkbox"] {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .test-item label {
+      font-size: 13px;
+      cursor: pointer;
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    .test-item .result-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: none;
+    }
+    .test-item .result-badge.pass { background: rgba(34,197,94,0.15); color: var(--pass); display: inline-block; }
+    .test-item .result-badge.fail { background: rgba(239,68,68,0.15); color: var(--fail); display: inline-block; }
+
+    .select-all-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      flex: 1;
+    }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-h); }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      padding: 7px 12px;
+    }
+    .btn-ghost:hover:not(:disabled) { color: var(--text); border-color: var(--accent); }
+
+    .btn-danger {
+      background: rgba(239,68,68,0.12);
+      color: var(--fail);
+      border: 1px solid rgba(239,68,68,0.3);
+    }
+    .btn-danger:hover:not(:disabled) { background: rgba(239,68,68,0.2); }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      flex-direction: column;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+      text-align: center;
+    }
+    .stat-card .num {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .stat-card .lbl {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+    .stat-card.pass .num { color: var(--pass); }
+    .stat-card.fail .num { color: var(--fail); }
+    .stat-card.total .num { color: var(--accent-h); }
+
+    /* ── Panneau droite (output) ── */
+    .output-panel {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .output-toolbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .output-toolbar h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .output-toolbar .spacer { flex: 1; }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pill.active { border-color: var(--accent); color: var(--accent); background: rgba(99,102,241,0.1); }
+    .pill.pass-pill.active { border-color: var(--pass); color: var(--pass); background: rgba(34,197,94,0.1); }
+    .pill.fail-pill.active { border-color: var(--fail); color: var(--fail); background: rgba(239,68,68,0.1); }
+
+    #output {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 12.5px;
+      line-height: 1.7;
+      background: var(--bg);
+    }
+
+    .log-line {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      padding: 1px 0;
+      border-radius: 4px;
+    }
+    .log-line:hover { background: rgba(255,255,255,0.03); }
+
+    .log-line .time {
+      color: var(--text-dim);
+      font-size: 10px;
+      min-width: 52px;
+      flex-shrink: 0;
+    }
+
+    .log-line .msg { flex: 1; word-break: break-all; }
+
+    .log-line.pass .msg { color: var(--pass); }
+    .log-line.fail .msg { color: var(--fail); }
+    .log-line.warn .msg { color: var(--warn); }
+    .log-line.info .msg { color: var(--info); }
+    .log-line.summary .msg { color: var(--summary); font-weight: 600; }
+    .log-line.cmd .msg { color: var(--accent-h); font-style: italic; }
+    .log-line.done.success .msg { color: var(--pass); font-weight: 700; font-size: 13px; }
+    .log-line.done.fail .msg { color: var(--fail); font-weight: 700; font-size: 13px; }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-dim);
+      gap: 12px;
+    }
+    .empty-state .icon { font-size: 48px; opacity: 0.4; }
+    .empty-state p { font-size: 14px; }
+
+    /* ── Onglets output / échecs ── */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .tab {
+      padding: 10px 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-dim);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab .badge {
+      background: rgba(239,68,68,0.2);
+      color: var(--fail);
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 10px;
+    }
+
+    /* ── Panneau Échecs ── */
+    #failuresPanel {
+      display: none;
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      background: var(--bg);
+    }
+    #failuresPanel.active { display: block; }
+    #output.hidden { display: none; }
+
+    .failure-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--fail);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .failure-header {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .failure-header:hover { background: rgba(255,255,255,0.03); }
+    .failure-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+      word-break: break-all;
+    }
+    .failure-body {
+      display: none;
+      padding: 14px;
+      border-top: 1px solid var(--border);
+      gap: 10px;
+      flex-direction: column;
+    }
+    .failure-body.open { display: flex; }
+    .failure-files {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .file-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s;
+    }
+    .file-btn:hover { opacity: 0.8; }
+    .file-btn.screenshot { background: rgba(99,102,241,0.15); color: var(--accent-h); }
+    .file-btn.video { background: rgba(239,68,68,0.12); color: var(--fail); }
+    .failure-preview {
+      margin-top: 8px;
+    }
+    .failure-preview img {
+      max-width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .failure-preview video {
+      max-width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">🎭 BV Tech — Tests E2E</div>
+    <div class="subtitle">Interface Playwright · https://dev.bluevaloristech.com</div>
+  </div>
+  <span id="statusDot" class="status-dot" title="Déconnecté"></span>
+</header>
+
+<main>
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div>
+      <h2>Sélectionner les tests</h2>
+    </div>
+
+    <div class="select-all-row">
+      <button class="btn btn-ghost" onclick="selectAll(true)">Tout sélectionner</button>
+      <button class="btn btn-ghost" onclick="selectAll(false)">Tout désélectionner</button>
+    </div>
+
+    <div class="test-list" id="testList"></div>
+
+    <div class="stats-row">
+      <div class="stat-card total"><div class="num" id="statTotal">0</div><div class="lbl">Total</div></div>
+      <div class="stat-card pass"><div class="num" id="statPass">0</div><div class="lbl">Réussis</div></div>
+      <div class="stat-card fail"><div class="num" id="statFail">0</div><div class="lbl">Échoués</div></div>
+    </div>
+
+    <div class="action-row">
+      <button class="btn btn-primary" id="btnRun" onclick="startTests()">
+        ▶ Lancer les tests
+      </button>
+      <button class="btn btn-danger" id="btnStop" onclick="stopTests()" disabled>
+        ⛔ Arrêter
+      </button>
+      <button class="btn btn-ghost" onclick="clearOutput()">
+        🗑 Effacer la sortie
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── Output panel ── -->
+  <section class="output-panel">
+    <!-- Onglets -->
+    <div class="tab-bar">
+      <div class="tab active" id="tabOutput" onclick="switchTab('output')">📋 Sortie en temps réel</div>
+      <div class="tab" id="tabFailures" onclick="switchTab('failures')">
+        📸 Screenshots &amp; Vidéos
+        <span class="badge" id="failuresBadge" style="display:none">0</span>
+      </div>
+    </div>
+
+    <!-- Barre d'outils (output seulement) -->
+    <div class="output-toolbar" id="outputToolbar">
+      <div class="filter-pills">
+        <button class="pill active" data-filter="all" onclick="setFilter('all')">Tout</button>
+        <button class="pill pass-pill" data-filter="pass" onclick="setFilter('pass')">✓ Réussis</button>
+        <button class="pill fail-pill" data-filter="fail" onclick="setFilter('fail')">✗ Échoués</button>
+        <button class="pill" data-filter="summary" onclick="setFilter('summary')">Résumé</button>
+      </div>
+    </div>
+
+    <div id="output">
+      <div class="empty-state" id="emptyState">
+        <div class="icon">🎭</div>
+        <p>Sélectionnez des tests et cliquez sur <strong>Lancer</strong>.</p>
+      </div>
+    </div>
+
+    <!-- Panneau Échecs -->
+    <div id="failuresPanel">
+      <div class="empty-state" id="failuresEmpty">
+        <div class="icon">📸</div>
+        <p>Les screenshots et vidéos des tests échoués apparaîtront ici.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  // ── Données tests ──
+  const TESTS = {
+    'e2e-01-signup':         'E2E-01 — Inscription (Signup)',
+    'e2e-02-login':          'E2E-02 — Connexion & Navigation',
+    'e2e-03-profile':        'E2E-03 — Profil Client',
+    'e2e-04-dashboard':      'E2E-04 — Dashboard Client',
+    'e2e-05-admin-login':    'E2E-05 — Connexion Admin',
+    'e2e-06-admin-users':    'E2E-06 — Gestion Utilisateurs (Admin)',
+    'e2e-07-admin-packs':    'E2E-07 — Gestion Packs (Admin)',
+    'e2e-08-admin-payments': 'E2E-08 — Paiements (Admin)',
+    'e2e-09-admin-contacts': 'E2E-09 — Contacts (Admin)',
+    'regression':            '🔄 Régression Complète',
+  };
+
+  // ── État ──
+  let currentFilter = 'all';
+  let logLines = [];
+  let stats = { total: 0, pass: 0, fail: 0 };
+  let autoScroll = true;
+  let es = null;
+
+  // ── Initialisation ──
+  function buildTestList() {
+    const list = document.getElementById('testList');
+    list.innerHTML = '';
+    Object.entries(TESTS).forEach(([key, label]) => {
+      const item = document.createElement('div');
+      item.className = 'test-item';
+      item.dataset.key = key;
+      item.innerHTML = `
+        <input type="checkbox" id="cb_${key}" checked />
+        <label for="cb_${key}">${label}</label>
+        <span class="result-badge" id="badge_${key}"></span>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  function selectAll(checked) {
+    document.querySelectorAll('.test-item input[type="checkbox"]').forEach(cb => {
+      cb.checked = checked;
+    });
+  }
+
+  // ── SSE ──
+  function connectSSE() {
+    es = new EventSource('/events');
+
+    es.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      handleEvent(data);
+    };
+
+    es.onopen = () => {
+      setDot('connected');
+    };
+
+    es.onerror = () => {
+      setDot('disconnected');
+      setTimeout(connectSSE, 3000);
+    };
+  }
+
+  function handleEvent(data) {
+    switch (data.type) {
+      case 'connected':
+        if (data.running) setRunningState(true);
+        break;
+      case 'start':
+        setRunningState(true);
+        resetStats();
+        appendLine('start', '─'.repeat(60));
+        appendLine('start', data.message);
+        break;
+      case 'cmd':
+        appendLine('cmd', '$ ' + data.message);
+        break;
+      case 'pass':
+        if (/^ok\s+\d+\s/.test(data.message)) {
+          stats.pass++;
+          stats.total++;
+          updateStats();
+        }
+        appendLine('pass', data.message);
+        break;
+      case 'fail':
+        if (/^x\s+\d+\s/.test(data.message)) {
+          stats.fail++;
+          stats.total++;
+          updateStats();
+        }
+        appendLine('fail', data.message);
+        break;
+      case 'warn':
+        appendLine('warn', data.message);
+        break;
+      case 'summary': {
+        appendLine('summary', data.message);
+        // Extraire les totaux depuis la ligne de résumé Playwright
+        const mPass = data.message.match(/(\d+)\s+passed/);
+        const mFail = data.message.match(/(\d+)\s+failed/);
+        if (mPass || mFail) {
+          if (mPass) stats.pass = parseInt(mPass[1]);
+          if (mFail) stats.fail = parseInt(mFail[1]);
+          stats.total = stats.pass + stats.fail;
+          updateStats();
+        }
+        break;
+      }
+      case 'done':
+        setRunningState(false);
+        appendLine('summary', '─'.repeat(60));
+        appendLine(data.success ? 'done success' : 'done fail', data.message);
+        if (!data.success) {
+          setTimeout(refreshFailureBadge, 1000);
+          appendLine('info', '→ Onglet "Screenshots & Vidéos" pour voir les détails des échecs');
+        }
+        break;
+      case 'error':
+        appendLine('fail', '⚠ ' + data.message);
+        setRunningState(false);
+        break;
+      default:
+        appendLine('info', data.message);
+    }
+  }
+
+  // ── Output ──
+  function appendLine(type, message) {
+    if (!message || !message.trim()) return;
+
+    document.getElementById('emptyState').style.display = 'none';
+
+    const entry = { type, message, time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) };
+    logLines.push(entry);
+
+    const el = createLineEl(entry);
+    document.getElementById('output').appendChild(el);
+
+    applyFilter();
+
+    if (autoScroll) {
+      el.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    }
+  }
+
+  function createLineEl(entry) {
+    const div = document.createElement('div');
+    div.className = `log-line ${entry.type}`;
+    div.dataset.type = entry.type.split(' ')[0];
+    div.innerHTML = `
+      <span class="time">${entry.time}</span>
+      <span class="msg">${escapeHtml(entry.message)}</span>
+    `;
+    return div;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function clearOutput() {
+    logLines = [];
+    resetStats();
+    const output = document.getElementById('output');
+    output.innerHTML = '<div class="empty-state" id="emptyState"><div class="icon">🎭</div><p>Sélectionnez des tests et cliquez sur <strong>Lancer</strong>.</p></div>';
+    // Reset badges
+    document.querySelectorAll('.result-badge').forEach(b => {
+      b.className = 'result-badge';
+      b.textContent = '';
+    });
+  }
+
+  // ── Filtres ──
+  function setFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.pill').forEach(p => {
+      p.classList.toggle('active', p.dataset.filter === filter);
+    });
+    applyFilter();
+  }
+
+  function applyFilter() {
+    document.querySelectorAll('#output .log-line').forEach(el => {
+      const type = el.dataset.type || '';
+      if (currentFilter === 'all') {
+        el.style.display = '';
+      } else {
+        el.style.display = type === currentFilter ? '' : 'none';
+      }
+    });
+  }
+
+  // ── Stats ──
+  function resetStats() {
+    stats = { total: 0, pass: 0, fail: 0 };
+    updateStats();
+    // Reset badges
+    document.querySelectorAll('.result-badge').forEach(b => {
+      b.className = 'result-badge';
+      b.textContent = '';
+    });
+  }
+
+  function updateStats() {
+    document.getElementById('statTotal').textContent = stats.total;
+    document.getElementById('statPass').textContent = stats.pass;
+    document.getElementById('statFail').textContent = stats.fail;
+  }
+
+  // ── État running ──
+  function setRunningState(running) {
+    document.getElementById('btnRun').disabled = running;
+    document.getElementById('btnStop').disabled = !running;
+    setDot(running ? 'running' : 'connected');
+  }
+
+  function setDot(state) {
+    const dot = document.getElementById('statusDot');
+    dot.className = `status-dot ${state}`;
+    dot.title = { running: 'Tests en cours...', connected: 'Connecté', disconnected: 'Déconnecté' }[state] || state;
+  }
+
+  // ── Actions ──
+  async function startTests() {
+    const selected = Array.from(document.querySelectorAll('.test-item input:checked'))
+      .map(cb => cb.id.replace('cb_', ''));
+
+    if (selected.length === 0) {
+      alert('Veuillez sélectionner au moins un test.');
+      return;
+    }
+
+    await fetch('/run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tests: selected }),
+    });
+  }
+
+  async function stopTests() {
+    await fetch('/stop', { method: 'POST' });
+  }
+
+  // ── Auto-scroll ──
+  document.addEventListener('DOMContentLoaded', () => {
+    const output = document.getElementById('output');
+    output.addEventListener('scroll', () => {
+      const atBottom = output.scrollHeight - output.scrollTop - output.clientHeight < 50;
+      autoScroll = atBottom;
+    });
+  });
+
+  // ── Onglets ──
+  function switchTab(tab) {
+    document.getElementById('tabOutput').classList.toggle('active', tab === 'output');
+    document.getElementById('tabFailures').classList.toggle('active', tab === 'failures');
+    document.getElementById('output').classList.toggle('hidden', tab !== 'output');
+    document.getElementById('outputToolbar').style.display = tab === 'output' ? '' : 'none';
+    document.getElementById('failuresPanel').classList.toggle('active', tab === 'failures');
+    if (tab === 'failures') loadFailures();
+  }
+
+  // ── Fichiers d'échec ──
+  async function loadFailures() {
+    const panel = document.getElementById('failuresPanel');
+    const empty = document.getElementById('failuresEmpty');
+
+    const res = await fetch('/failures');
+    const folders = await res.json();
+
+    // Vider sauf l'empty state
+    Array.from(panel.children).forEach(c => { if (c.id !== 'failuresEmpty') c.remove(); });
+
+    if (folders.length === 0) {
+      empty.style.display = '';
+      return;
+    }
+    empty.style.display = 'none';
+
+    folders.forEach(f => {
+      const card = document.createElement('div');
+      card.className = 'failure-card';
+
+      // Nom court : extraire le nom du test depuis le dossier
+      const shortName = f.name
+        .replace(/-bvtech-(admin|client|public|login-flow)$/, '')
+        .replace(/^e2e-\d+-[^-]+-/, '')
+        .replace(/-/g, ' ')
+        .replace(/[a-f0-9]{5,}/g, '')
+        .trim();
+
+      card.innerHTML = `
+        <div class="failure-header" onclick="toggleCard(this)">
+          <span style="color:var(--fail)">✗</span>
+          <span class="failure-title">${shortName || f.name}</span>
+          <span style="font-size:11px;color:var(--text-dim)">${f.hasPng ? '📸' : ''} ${f.hasVideo ? '🎬' : ''}</span>
+          <span style="color:var(--text-dim);font-size:11px">▼</span>
+        </div>
+        <div class="failure-body">
+          <div class="failure-files">
+            ${f.hasPng ? `<button class="file-btn screenshot" onclick="showFile('${f.name}','test-failed-1.png','img')">📸 Screenshot</button>` : ''}
+            ${f.hasVideo ? `<button class="file-btn video" onclick="showFile('${f.name}','video.webm','video')">🎬 Vidéo</button>` : ''}
+            ${f.hasMd ? `<button class="file-btn screenshot" style="background:rgba(100,116,139,0.2);color:var(--info)" onclick="showFile('${f.name}','error-context.md','text')">📄 Contexte</button>` : ''}
+          </div>
+          <div class="failure-preview" id="preview_${CSS.escape(f.name)}"></div>
+        </div>
+      `;
+      panel.appendChild(card);
+    });
+
+    // Badge
+    const badge = document.getElementById('failuresBadge');
+    badge.textContent = folders.length;
+    badge.style.display = folders.length > 0 ? '' : 'none';
+  }
+
+  function toggleCard(header) {
+    const body = header.nextElementSibling;
+    body.classList.toggle('open');
+  }
+
+  function showFile(dir, file, type) {
+    const previewId = 'preview_' + CSS.escape(dir);
+    const preview = document.getElementById(previewId);
+    if (!preview) return;
+
+    const src = `/failure-file?dir=${encodeURIComponent(dir)}&file=${encodeURIComponent(file)}`;
+
+    if (type === 'img') {
+      preview.innerHTML = `<img src="${src}" alt="Screenshot" />`;
+    } else if (type === 'video') {
+      preview.innerHTML = `<video src="${src}" controls autoplay style="max-width:100%"></video>`;
+    } else {
+      fetch(src).then(r => r.text()).then(text => {
+        preview.innerHTML = `<pre style="background:var(--surface2);padding:12px;border-radius:6px;font-size:11px;overflow:auto;max-height:300px;color:var(--info)">${escapeHtml(text)}</pre>`;
+      });
+    }
+  }
+
+  // Charger les échecs au démarrage et après chaque fin de tests
+  async function refreshFailureBadge() {
+    const res = await fetch('/failures');
+    const folders = await res.json();
+    const badge = document.getElementById('failuresBadge');
+    badge.textContent = folders.length;
+    badge.style.display = folders.length > 0 ? '' : 'none';
+  }
+
+  // ── Init ──
+  buildTestList();
+  connectSSE();
+  refreshFailureBadge();
+</script>
+</body>
+</html>
