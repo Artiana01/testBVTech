@@ -1,0 +1,7 @@
+**/node_modules
+**/.env
+**/apps/bvtech/.env
+**/apps/bvtech/auth
+**/test-results
+**/playwright-report
+**/playwright-report-bvtech
