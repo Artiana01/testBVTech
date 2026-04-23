@@ -1,32 +1,15 @@
-FROM node:18-alpine
+FROM mcr.microsoft.com/playwright:v1.44.0-jammy
 
 WORKDIR /app
 
-# Installer les dépendances système pour Playwright
-RUN apk add --no-cache \
-    chromium \
-    firefox \
-    webkit-dev \
-    libxkbcommon \
-    libxdamage
+COPY e2e-tests/package*.json ./e2e-tests/
+RUN cd e2e-tests && npm ci --ignore-scripts
 
-# Copier les fichiers
-COPY . .
+COPY e2e-tests/ ./e2e-tests/
 
-# Aller au dossier e2e-tests
 WORKDIR /app/e2e-tests
 
-# Installer les dépendances npm
-RUN npm ci
-
-# Installer les navigateurs Playwright
-RUN npx playwright install chromium --with-deps
-
-# Port
+ENV PORT=3000
 EXPOSE 3000
 
-# Définir la variable d'environnement pour le port
-ENV PORT=3000
-
-# Démarrer le serveur
-CMD ["npm", "run", "ui"]
+CMD ["npm", "start"]
