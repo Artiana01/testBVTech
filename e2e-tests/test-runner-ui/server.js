@@ -15,7 +15,7 @@ const url = require('url');
 
 const TEST_RESULTS_DIR = path.join(__dirname, '..', 'test-results');
 
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 const HTML_FILE = path.join(__dirname, 'index.html');
 const ROOT_DIR = path.join(__dirname, '..');
 

@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Projet de tests E2E automatisés avec Playwright — utilisable sur plusieurs applications",
   "scripts": {
+    "start": "node test-runner-ui/server.js",
+    "postinstall": "npx playwright install chromium --with-deps",
     "test": "playwright test",
     "test:app-template": "playwright test apps/app-template/tests/",
     "test:ecommerce": "playwright test apps/ecommerce/tests/",
