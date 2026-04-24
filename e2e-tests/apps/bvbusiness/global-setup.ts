@@ -70,15 +70,27 @@ export default async function globalSetup(_config: FullConfig) {
     fs.mkdirSync(AUTH_DIR, { recursive: true });
   }
 
-  // Sur Railway : si la variable BVBUSINESS_SESSION est définie (base64 du admin.json),
-  // on l'écrit dans le fichier avant de valider.
+  // Sur Railway : si BVBUSINESS_SESSION est définie (base64 du admin.json),
+  // on l'écrit dans le fichier et on saute la validation navigateur
+  // (les PHPSESSID sont liés à l'IP locale, mais le JWT token reste valide depuis Railway).
   const sessionEnv = process.env.BVBUSINESS_SESSION;
   if (sessionEnv) {
     try {
       const decoded = Buffer.from(sessionEnv, 'base64').toString('utf-8');
-      JSON.parse(decoded); // vérifier que c'est du JSON valide
+      const sessionData = JSON.parse(decoded);
       fs.writeFileSync(ADMIN_SESSION, decoded, 'utf-8');
-      console.log('   📦  Session chargée depuis BVBUSINESS_SESSION (Railway).');
+
+      // Vérifier que le JWT token n'est pas expiré
+      const now = Date.now() / 1000;
+      const cookies: Array<{ name?: string; expires?: number }> = sessionData.cookies ?? [];
+      const jwtCookie = cookies.find((c) => c.name === 'token');
+      if (jwtCookie && jwtCookie.expires && jwtCookie.expires > 0 && jwtCookie.expires < now) {
+        console.log('   ⚠️   JWT token expiré dans BVBUSINESS_SESSION. Renouveler la session.');
+      } else {
+        console.log('   📦  Session chargée depuis BVBUSINESS_SESSION (Railway). JWT valide.');
+        console.log('   ✅  Lancement des tests...\n');
+        return; // Sauter la validation navigateur — PHPSESSID non portable entre IPs
+      }
     } catch {
       console.log('   ⚠️   BVBUSINESS_SESSION invalide — ignorée.');
     }
