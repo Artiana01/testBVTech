@@ -559,6 +559,10 @@
 
   // ── SSE ──
   function connectSSE() {
+    // Fermer l'ancienne connexion avant d'en ouvrir une nouvelle (évite les doublons)
+    if (es && es.readyState !== EventSource.CLOSED) {
+      es.close();
+    }
     es = new EventSource('/events');
     es.onmessage = (e) => handleEvent(JSON.parse(e.data));
     es.onopen    = ()  => setDot('connected');

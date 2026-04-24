@@ -75,8 +75,10 @@ function classifyLine(line) {
   const clean = stripAnsi(line).trim();
   if (/^ok\s+\d+\s/.test(clean)) return 'pass';
   if (/^x\s+\d+\s/.test(clean)) return 'fail';
-  if (/^\d+ passed/.test(clean) || /✓|✅/.test(clean)) return 'pass';
-  if (/^\d+ failed/.test(clean) || /✗|×|❌/.test(clean)) return 'fail';
+  // Lignes résumé final : "65 passed (6.7m)", "3 failed" → 'summary' pour que les KPIs se mettent à jour
+  if (/^\d+\s+passed/.test(clean) || /^\d+\s+failed/.test(clean)) return 'summary';
+  if (/✓|✅/.test(clean)) return 'pass';
+  if (/✗|×|❌/.test(clean)) return 'fail';
   if (/^Running \d+ test|^Finished|workers|suite/i.test(clean)) return 'summary';
   if (/passed.*failed|failed.*passed|\d+ (passed|failed|skipped)/i.test(clean)) return 'summary';
   if (/Error:|⚠|warn|WARN|rate limit|limite/i.test(clean)) return 'warn';
