@@ -24,6 +24,7 @@ const CONFIGS = {
   bvtech:     'playwright.bvtech.config.ts',
   bvbusiness: 'playwright.bvbusiness.config.ts',
   bvinvest:   'playwright.bvinvest.config.ts',
+  emiragate:  'playwright.emiragate.config.ts',
 };
 
 // Tests BV Tech
@@ -69,6 +70,21 @@ const TESTS_BVINVEST = {
   'regression':            { file: 'apps/bvinvest/tests/regression.spec.ts',              label: 'Régression Complète' },
 };
 
+// Tests Emiragate (BV Install)
+const TESTS_EMIRAGATE = {
+  'e2e-01-login':     { file: 'apps/emiragate/tests/e2e-01-admin-login.spec.ts',    label: 'SC-01 — Connexion Admin' },
+  'e2e-02-dashboard': { file: 'apps/emiragate/tests/e2e-02-admin-dashboard.spec.ts',label: 'SC-02 — Dashboard Admin' },
+  'e2e-03-conduit':   { file: 'apps/emiragate/tests/e2e-03-conduit.spec.ts',        label: 'SC-03 — Leads / Conduit' },
+  'e2e-04-signup':    { file: 'apps/emiragate/tests/e2e-04-signup.spec.ts',         label: 'SC-04 — Inscription Client' },
+  'e2e-05-client':    { file: 'apps/emiragate/tests/e2e-05-client-login.spec.ts',   label: 'SC-05 — Connexion Client' },
+  'e2e-06-profile':   { file: 'apps/emiragate/tests/e2e-06-profile.spec.ts',        label: 'SC-06 — Profil Utilisateur' },
+  'e2e-07-users':     { file: 'apps/emiragate/tests/e2e-07-admin-users.spec.ts',    label: 'SC-07 — Gestion Utilisateurs' },
+  'e2e-08-contacts':  { file: 'apps/emiragate/tests/e2e-08-contacts.spec.ts',       label: 'SC-08 — Gestion Contacts' },
+  'e2e-09-analytics': { file: 'apps/emiragate/tests/e2e-09-analytics.spec.ts',      label: 'SC-09 — Analytique' },
+  'e2e-10-navigation':{ file: 'apps/emiragate/tests/e2e-10-navigation.spec.ts',     label: 'SC-10/11 — Navigation & Déconnexion' },
+  'regression':       { file: 'apps/emiragate/tests/regression.spec.ts',            label: 'Régression Complète' },
+};
+
 // Clients SSE actifs
 let sseClients = [];
 
@@ -109,10 +125,10 @@ function runTests(selectedTests, app) {
     return;
   }
 
-  const appKey = ['bvbusiness', 'bvinvest'].includes(app) ? app : 'bvtech';
+  const appKey = ['bvbusiness', 'bvinvest', 'emiragate'].includes(app) ? app : 'bvtech';
   const config = CONFIGS[appKey];
-  const testsMap = appKey === 'bvbusiness' ? TESTS_BVBUSINESS : appKey === 'bvinvest' ? TESTS_BVINVEST : TESTS_BVTECH;
-  const appLabel = appKey === 'bvbusiness' ? 'BV Business' : appKey === 'bvinvest' ? 'BV Invest' : 'BV Tech';
+  const testsMap = { bvbusiness: TESTS_BVBUSINESS, bvinvest: TESTS_BVINVEST, emiragate: TESTS_EMIRAGATE }[appKey] ?? TESTS_BVTECH;
+  const appLabel = { bvbusiness: 'BV Business', bvinvest: 'BV Invest', emiragate: 'Emiragate' }[appKey] ?? 'BV Tech';
 
   isRunning = true;
   sendToAllClients({ type: 'start', message: `🚀 Démarrage des tests ${appLabel}...` });
@@ -232,7 +248,7 @@ const server = http.createServer((req, res) => {
   // === GET /status : état courant ===
   if (parsed.pathname === '/status') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ running: isRunning, tests: { bvtech: TESTS_BVTECH, bvbusiness: TESTS_BVBUSINESS, bvinvest: TESTS_BVINVEST } }));
+    res.end(JSON.stringify({ running: isRunning, tests: { bvtech: TESTS_BVTECH, bvbusiness: TESTS_BVBUSINESS, bvinvest: TESTS_BVINVEST, emiragate: TESTS_EMIRAGATE } }));
     return;
   }
 
@@ -251,6 +267,7 @@ const server = http.createServer((req, res) => {
       if (appFilter === 'bvtech'     && !name.includes('-bvtech-'))     return null;
       if (appFilter === 'bvbusiness' && !name.includes('-bvbusiness-')) return null;
       if (appFilter === 'bvinvest'   && !name.includes('-bvinvest-'))   return null;
+      if (appFilter === 'emiragate'  && !name.includes('-emiragate-'))  return null;
       const files = fs.readdirSync(dir);
       const hasPng  = files.find(f => f.endsWith('.png'));
       const hasVideo = files.find(f => f.endsWith('.webm'));
