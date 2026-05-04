@@ -1,1 +1,35 @@
-{"cookies":[],"origins":[]}
+{
+  "cookies": [
+    {
+      "name": "NEXT_LOCALE",
+      "value": "en",
+      "domain": "dev.bluevalorisinstall.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "auth_session",
+      "value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7ImlkIjozLCJuYW1lIjoiYWRtaW4iLCJlbWFpbCI6IndlYm1hc3RlckBibHVldmFsb3Jpcy5jb20iLCJlbWFpbF92ZXJpZmllZF9hdCI6bnVsbCwiY3JlYXRlZF9hdCI6IjIwMjYtMDQtMjhUMDc6MDc6NDguMDAwMDAwWiIsInVwZGF0ZWRfYXQiOiIyMDI2LTA0LTI4VDA3OjA3OjQ4LjAwMDAwMFoiLCJzdHJpcGVfY3VzdG9tZXJfaWQiOm51bGwsInBob25lX251bWJlciI6bnVsbCwiYWRkcmVzcyI6bnVsbCwicm9sZSI6IlJPTEVfQURNSU4iLCJhdmF0YXIiOm51bGwsImdvb2dsZV9pZCI6bnVsbCwiYXZhdGFyX3VybCI6bnVsbH0sImV4cGlyZXMiOiIyMDI2LTA0LTI4VDEwOjE0OjU5LjU2N1oiLCJpYXQiOjE3NzczNjc2OTksImV4cCI6MTc3NzM3MTI5OX0.5NPBCNWF5-sSkF1ndgu_4id8_QefQxp2QYKue1_TXPU",
+      "domain": "dev.bluevalorisinstall.com",
+      "path": "/",
+      "expires": 1777371293.958299,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "token",
+      "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXBpLWRldi5ibHVldmFsb3Jpc2luc3RhbGwuY29tL2FwaS9sb2dpbiIsImlhdCI6MTc3NzM2NzY5OSwiZXhwIjoxNzc3MzcxMjk5LCJuYmYiOjE3NzczNjc2OTksImp0aSI6InpjTnNmZnVXQkVpMExsaUwiLCJzdWIiOiIzIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.bB52nIVf7bxsIc-zbT6hxj2Vltuw6OYZTW59zkk4WjM",
+      "domain": "dev.bluevalorisinstall.com",
+      "path": "/",
+      "expires": 1777371293.958854,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}

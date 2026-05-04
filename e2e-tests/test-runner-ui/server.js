@@ -119,6 +119,11 @@ function classifyLine(line) {
   return 'info';
 }
 
+function makeRunOutputDir() {
+  const runName = `ui-run-${Date.now()}`;
+  return path.join('test-results', runName);
+}
+
 function runTests(selectedTests, app) {
   if (isRunning) {
     sendToAllClients({ type: 'error', message: 'Un test est déjà en cours. Attendez la fin avant de relancer.' });
@@ -133,10 +138,12 @@ function runTests(selectedTests, app) {
   isRunning = true;
   sendToAllClients({ type: 'start', message: `🚀 Démarrage des tests ${appLabel}...` });
 
+  const outputDir = makeRunOutputDir();
   const args = [
     'playwright', 'test',
     '--config', config,
     '--reporter=list',
+    '--output', outputDir,
   ];
 
   if (selectedTests && selectedTests.length > 0 && !selectedTests.includes('all')) {
@@ -260,21 +267,35 @@ const server = http.createServer((req, res) => {
       return;
     }
     const appFilter = parsed.query.app || null; // 'bvtech' | 'bvbusiness' | null
-    const folders = fs.readdirSync(TEST_RESULTS_DIR).map(name => {
-      const dir = path.join(TEST_RESULTS_DIR, name);
-      if (!fs.statSync(dir).isDirectory()) return null;
-      // Filtrer par app si demandé
-      if (appFilter === 'bvtech'     && !name.includes('-bvtech-'))     return null;
-      if (appFilter === 'bvbusiness' && !name.includes('-bvbusiness-')) return null;
-      if (appFilter === 'bvinvest'   && !name.includes('-bvinvest-'))   return null;
-      if (appFilter === 'emiragate'  && !name.includes('-emiragate-'))  return null;
+
+    const found = [];
+    function collectFailureDir(dir, relativeName) {
+      if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) return;
       const files = fs.readdirSync(dir);
-      const hasPng  = files.find(f => f.endsWith('.png'));
+      const hasPng = files.find(f => f.endsWith('.png'));
       const hasVideo = files.find(f => f.endsWith('.webm'));
-      const hasMd   = files.find(f => f.endsWith('.md'));
-      return { name, hasPng: !!hasPng, hasVideo: !!hasVideo, hasMd: !!hasMd };
-    }).filter(f => f && (f.hasPng || f.hasVideo));
-    res.end(JSON.stringify(folders.reverse()));
+      const hasMd = files.find(f => f.endsWith('.md'));
+      if (!hasPng && !hasVideo) return;
+      const name = relativeName.replace(/\\/g, '/');
+      if (appFilter === 'bvtech'     && !name.includes('-bvtech-'))     return;
+      if (appFilter === 'bvbusiness' && !name.includes('-bvbusiness-')) return;
+      if (appFilter === 'bvinvest'   && !name.includes('-bvinvest-'))   return;
+      if (appFilter === 'emiragate'  && !name.includes('-emiragate-'))  return;
+      found.push({ name, hasPng: !!hasPng, hasVideo: !!hasVideo, hasMd: !!hasMd });
+    }
+
+    fs.readdirSync(TEST_RESULTS_DIR).forEach(name => {
+      const dir = path.join(TEST_RESULTS_DIR, name);
+      if (!fs.statSync(dir).isDirectory()) return;
+      collectFailureDir(dir, name);
+      fs.readdirSync(dir).forEach(child => {
+        const childDir = path.join(dir, child);
+        if (!fs.existsSync(childDir) || !fs.statSync(childDir).isDirectory()) return;
+        collectFailureDir(childDir, path.join(name, child));
+      });
+    });
+
+    res.end(JSON.stringify(found.reverse()));
     return;
   }
 

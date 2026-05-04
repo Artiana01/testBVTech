@@ -546,14 +546,64 @@
   // ── État ──
   let currentApp    = 'bvtech';
   let currentFilter = 'all';
+  let currentTab    = 'output';
   let logLines      = [];
   let stats         = { total: 0, pass: 0, fail: 0 };
   let autoScroll    = true;
   let es            = null;
 
+  const appStates = {
+    bvtech:     createAppState(),
+    bvbusiness: createAppState(),
+    bvinvest:   createAppState(),
+    emiragate:  createAppState(),
+  };
+
+  function createAppState() {
+    return {
+      logLines: [],
+      stats: { total: 0, pass: 0, fail: 0 },
+      selectedTests: null,
+    };
+  }
+
+  function saveCurrentAppState() {
+    if (!appStates[currentApp]) return;
+    appStates[currentApp].logLines = [...logLines];
+    appStates[currentApp].stats = { ...stats };
+    appStates[currentApp].selectedTests = Array.from(document.querySelectorAll('.test-item input[type="checkbox"]'))
+      .map(cb => ({ key: cb.id.replace('cb_', ''), checked: cb.checked }));
+  }
+
+  function restoreCurrentAppState() {
+    const state = appStates[currentApp];
+    if (!state) return;
+
+    logLines = [...state.logLines];
+    stats = { ...state.stats };
+    updateStats();
+
+    const output = document.getElementById('output');
+    if (logLines.length === 0) {
+      output.innerHTML = '<div class="empty-state" id="emptyState"><div class="icon">🎭</div><p>Sélectionnez des tests et cliquez sur <strong>Lancer</strong>.</p></div>';
+    } else {
+      output.innerHTML = '';
+      logLines.forEach(entry => output.appendChild(createLineEl(entry)));
+      applyFilter();
+    }
+
+    if (state.selectedTests) {
+      state.selectedTests.forEach(item => {
+        const cb = document.getElementById('cb_' + item.key);
+        if (cb) cb.checked = item.checked;
+      });
+    }
+  }
+
   // ── Changement d'app ──
   function switchApp(app) {
     if (currentApp === app) return;
+    saveCurrentAppState();
     currentApp = app;
 
     // Boutons header
@@ -576,7 +626,9 @@
     btnRun.classList.toggle('emiragate', app === 'emiragate');
 
     buildTestList();
-    clearOutput();
+    restoreCurrentAppState();
+    refreshFailureBadge();
+    if (currentTab === 'failures') loadFailures();
   }
 
   // ── Liste des tests ──
@@ -656,10 +708,11 @@
         setRunningState(false);
         appendLine('summary', '─'.repeat(60));
         appendLine(data.success ? 'done success' : 'done fail', data.message);
-        if (!data.success) {
-          setTimeout(refreshFailureBadge, 1000);
-          appendLine('info', '→ Onglet "Screenshots & Vidéos" pour voir les détails des échecs');
-        }
+        setTimeout(() => {
+          refreshFailureBadge();
+          if (currentTab === 'failures') loadFailures();
+        }, 1000);
+        appendLine('info', '→ Onglet "Screenshots & Vidéos" pour voir les détails des échecs');
         break;
       case 'error':
         appendLine('fail', '⚠ ' + data.message);
@@ -706,6 +759,10 @@
 
   function clearOutput() {
     logLines = [];
+    if (appStates[currentApp]) {
+      appStates[currentApp].logLines = [];
+      appStates[currentApp].stats = { total: 0, pass: 0, fail: 0 };
+    }
     resetStats();
     const output = document.getElementById('output');
     output.innerHTML = '<div class="empty-state" id="emptyState"><div class="icon">🎭</div><p>Sélectionnez des tests et cliquez sur <strong>Lancer</strong>.</p></div>';
@@ -783,6 +840,7 @@
 
   // ── Onglets output / échecs ──
   function switchTab(tab) {
+    currentTab = tab;
     document.getElementById('tabOutput').classList.toggle('active',   tab === 'output');
     document.getElementById('tabFailures').classList.toggle('active', tab === 'failures');
     document.getElementById('output').classList.toggle('hidden',      tab !== 'output');
@@ -873,6 +931,7 @@
 
   // ── Init ──
   buildTestList();
+  restoreCurrentAppState();
   connectSSE();
   refreshFailureBadge();
 </script>
