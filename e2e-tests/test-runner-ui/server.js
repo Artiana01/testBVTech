@@ -25,6 +25,8 @@ const CONFIGS = {
   bvbusiness: 'playwright.bvbusiness.config.ts',
   bvinvest:   'playwright.bvinvest.config.ts',
   emiragate:  'playwright.emiragate.config.ts',
+  bvportage:  'playwright.bvportage.config.ts',
+  bvportageFreelance: 'playwright.bvportage-freelance.config.ts',
 };
 
 // Tests BV Tech
@@ -85,12 +87,39 @@ const TESTS_EMIRAGATE = {
   'regression':       { file: 'apps/emiragate/tests/regression.spec.ts',            label: 'Régression Complète' },
 };
 
+// Tests BV Portage (Portage Salarial - Agence)
+const TESTS_BVPORTAGE = {
+  'e2e-01-signup-activation': { file: 'apps/bvportage/tests/e2e-01-signup-activation.spec.ts',       label: 'E2E-01 — Inscription + OTP (Agence)' },
+  'e2e-02-login-pack-subscription': { file: 'apps/bvportage/tests/e2e-02-login-pack-subscription.spec.ts', label: 'E2E-02 — Login + Pack 159€' },
+  'e2e-03-client-creation': { file: 'apps/bvportage/tests/e2e-03-client-creation.spec.ts',           label: 'E2E-03 — Client + Projet' },
+  'e2e-04-mission-contract-kyc': { file: 'apps/bvportage/tests/e2e-04-mission-contract-kyc.spec.ts', label: 'E2E-04 — Mission + Contrat + KYC' },
+  'e2e-05-contract-signature': { file: 'apps/bvportage/tests/e2e-05-contract-signature.spec.ts',     label: 'E2E-05 — Signature Contrat' },
+  'e2e-06-invoice-payment': { file: 'apps/bvportage/tests/e2e-06-invoice-payment.spec.ts',           label: 'E2E-06 — Facturation + Paiement' },
+  'e2e-07-team-invitation': { file: 'apps/bvportage/tests/e2e-07-team-invitation.spec.ts',           label: 'E2E-07 — Invitation Équipe' },
+  'e2e-08-reversal': { file: 'apps/bvportage/tests/e2e-08-reversal.spec.ts',                          label: 'E2E-08 — Reversement' },
+};
+
+// Tests BV Portage (Portage Salarial - Freelance)
+const TESTS_BVPORTAGE_FREELANCE = {
+  'e2e-01-signup-otp': { file: 'apps/bvportage-freelance/tests/e2e-01-signup-otp.spec.ts',           label: 'E2E-01 — Inscription Freelance + OTP' },
+  'e2e-02-pack-subscription': { file: 'apps/bvportage-freelance/tests/e2e-02-pack-subscription.spec.ts', label: 'E2E-02 — Souscription Pack (79€)' },
+  'e2e-03-project-client': { file: 'apps/bvportage-freelance/tests/e2e-03-project-client.spec.ts',   label: 'E2E-03 — Création Projet + Client' },
+  'e2e-04-mission-contract-signature': { file: 'apps/bvportage-freelance/tests/e2e-04-mission-contract-signature.spec.ts', label: 'E2E-04 — Mission + Contrat + Signature' },
+  'e2e-05-kyc-admin-validation': { file: 'apps/bvportage-freelance/tests/e2e-05-kyc-admin-validation.spec.ts', label: 'E2E-05 — KYC + Validation Admin' },
+  'e2e-06-invoice-payment': { file: 'apps/bvportage-freelance/tests/e2e-06-invoice-payment.spec.ts',     label: 'E2E-06 — Facturation + Paiement' },
+  'e2e-07-reset-password': { file: 'apps/bvportage-freelance/tests/e2e-07-reset-password.spec.ts',       label: 'E2E-07 — Reset Mot de passe' },
+  'e2e-08-profile': { file: 'apps/bvportage-freelance/tests/e2e-08-profile.spec.ts',                     label: 'E2E-08 — Gestion Profil' },
+  'e2e-09-edge-cases': { file: 'apps/bvportage-freelance/tests/e2e-09-edge-cases.spec.ts',               label: 'E2E-09 — Cas limites & comptes' },
+};
+
 // Clients SSE actifs
 let sseClients = [];
 
 // Processus Playwright en cours
 let runningProcess = null;
 let isRunning = false;
+let lastApp = 'bvtech';
+let testsStopped = false;  // Flag pour tracker si l'arrêt a été demandé
 
 function sendToAllClients(data) {
   const payload = `data: ${JSON.stringify(data)}\n\n`;
@@ -125,17 +154,35 @@ function makeRunOutputDir() {
 }
 
 function runTests(selectedTests, app) {
-  if (isRunning) {
-    sendToAllClients({ type: 'error', message: 'Un test est déjà en cours. Attendez la fin avant de relancer.' });
+  if (isRunning && runningProcess) {
+    sendToAllClients({ type: 'error', message: '⛔ Un test est déjà en cours (app: ' + lastApp + '). Arrêtez-le avant de relancer.' });
     return;
   }
 
-  const appKey = ['bvbusiness', 'bvinvest', 'emiragate'].includes(app) ? app : 'bvtech';
+  const appKey = ['bvbusiness', 'bvinvest', 'emiragate', 'bvportage', 'bvportageFreelance'].includes(app) ? app : 'bvtech';
   const config = CONFIGS[appKey];
-  const testsMap = { bvbusiness: TESTS_BVBUSINESS, bvinvest: TESTS_BVINVEST, emiragate: TESTS_EMIRAGATE }[appKey] ?? TESTS_BVTECH;
-  const appLabel = { bvbusiness: 'BV Business', bvinvest: 'BV Invest', emiragate: 'Emiragate' }[appKey] ?? 'BV Tech';
+  
+  if (!config) {
+    sendToAllClients({ type: 'error', message: '❌ Configuration invalide pour l\'app: ' + appKey });
+    return;
+  }
+
+  const testsMap = { bvbusiness: TESTS_BVBUSINESS, bvinvest: TESTS_BVINVEST, emiragate: TESTS_EMIRAGATE, bvportage: TESTS_BVPORTAGE, bvportageFreelance: TESTS_BVPORTAGE_FREELANCE }[appKey] ?? TESTS_BVTECH;
+  const appLabel = { bvbusiness: 'BV Business', bvinvest: 'BV Invest', emiragate: 'Emiragate', bvportage: 'BV Portage', bvportageFreelance: 'BV Portage Freelance' }[appKey] ?? 'BV Tech';
+
+  // Tuer tout processus précédent
+  if (runningProcess) {
+    try {
+      runningProcess.kill('SIGKILL');
+    } catch (e) {
+      console.log('Impossible de tuer le processus précédent:', e.message);
+    }
+    runningProcess = null;
+  }
 
   isRunning = true;
+  lastApp = appKey;
+  testsStopped = false;  // Réinitialiser le flag
   sendToAllClients({ type: 'start', message: `🚀 Démarrage des tests ${appLabel}...` });
 
   const outputDir = makeRunOutputDir();
@@ -146,12 +193,23 @@ function runTests(selectedTests, app) {
     '--output', outputDir,
   ];
 
+  // IMPORTANT: Passer les fichiers de tests AVEC des chemins relatifs corrects
+  // pour que Playwright les découvre dans le bon testDir de la config.
+  // Ne JAMAIS passer le chemin sans le dossier app.
   if (selectedTests && selectedTests.length > 0 && !selectedTests.includes('all')) {
+    const testFiles = [];
     selectedTests.forEach(key => {
       const t = testsMap[key];
-      if (t) args.push(t.file);
+      if (t && t.file) {
+        testFiles.push(t.file);
+      }
     });
+    
+    // Ajouter tous les fichiers comme arguments positionnels
+    args.push(...testFiles);
   }
+  // Si aucun test sélectionné, ne pas ajouter d'args spécifiques
+  // Playwright utilisera testDir du config
 
   sendToAllClients({ type: 'cmd', message: `npx ${args.join(' ')}` });
 
@@ -180,6 +238,15 @@ function runTests(selectedTests, app) {
   });
 
   runningProcess.on('close', (code) => {
+    // Si l'arrêt a été demandé manuellement, ne pas envoyer de notification 'done'
+    // (on l'a déjà envoyée dans stopTests)
+    if (testsStopped) {
+      isRunning = false;
+      runningProcess = null;
+      testsStopped = false;
+      return;
+    }
+    
     isRunning = false;
     runningProcess = null;
     const success = code === 0;
@@ -242,10 +309,34 @@ const server = http.createServer((req, res) => {
   // === POST /stop : arrêter les tests ===
   if (req.method === 'POST' && parsed.pathname === '/stop') {
     if (runningProcess) {
-      runningProcess.kill('SIGTERM');
-      isRunning = false;
-      sendToAllClients({ type: 'warn', message: '⛔ Tests arrêtés par l\'utilisateur.' });
-      sendToAllClients({ type: 'status', running: false });
+      try {
+        // Marquer comme arrêté avant de tuer le processus
+        testsStopped = true;
+        
+        // Supprimer les listeners immédiatement pour éviter les logs après arrêt
+        runningProcess.removeAllListeners('data');
+        runningProcess.stdout?.removeAllListeners();
+        runningProcess.stderr?.removeAllListeners();
+        
+        // Tuer le processus avec force
+        runningProcess.kill('SIGKILL');
+        isRunning = false;
+        
+        // Nettoyer la référence après un timeout court
+        setTimeout(() => {
+          if (runningProcess) {
+            try { runningProcess.kill('SIGKILL'); } catch (_) {}
+            runningProcess = null;
+          }
+        }, 500);
+        
+        sendToAllClients({ type: 'warn', message: '⛔ Tests arrêtés par l\'utilisateur.' });
+        sendToAllClients({ type: 'done', success: false, message: 'Tests arrêtés.' });
+      } catch (e) {
+        console.error('Erreur lors de l\'arrêt des tests:', e.message);
+        isRunning = false;
+        testsStopped = false;
+      }
     }
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ ok: true }));
@@ -255,7 +346,7 @@ const server = http.createServer((req, res) => {
   // === GET /status : état courant ===
   if (parsed.pathname === '/status') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ running: isRunning, tests: { bvtech: TESTS_BVTECH, bvbusiness: TESTS_BVBUSINESS, bvinvest: TESTS_BVINVEST, emiragate: TESTS_EMIRAGATE } }));
+    res.end(JSON.stringify({ running: isRunning, tests: { bvtech: TESTS_BVTECH, bvbusiness: TESTS_BVBUSINESS, bvinvest: TESTS_BVINVEST, emiragate: TESTS_EMIRAGATE, bvportage: TESTS_BVPORTAGE, bvportageFreelance: TESTS_BVPORTAGE_FREELANCE } }));
     return;
   }
 

@@ -1,0 +1,19 @@
+{
+  "name": "bvportage-freelance-tests",
+  "version": "1.0.0",
+  "description": "E2E tests for BV Portage - Freelance side",
+  "scripts": {
+    "test": "playwright test --config=../../playwright.bvportage-freelance.config.ts",
+    "test:ui": "playwright test --config=../../playwright.bvportage-freelance.config.ts --ui",
+    "test:debug": "playwright test --config=../../playwright.bvportage-freelance.config.ts --debug",
+    "test:headed": "playwright test --config=../../playwright.bvportage-freelance.config.ts --headed"
+  },
+  "keywords": [
+    "playwright",
+    "e2e",
+    "tests",
+    "bvportage",
+    "freelance"
+  ],
+  "author": "BV Portage QA Team"
+}

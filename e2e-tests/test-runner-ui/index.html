@@ -26,6 +26,8 @@
       --bvbiz:     #0ea5e9;
       --bvinvest:  #10b981;
       --emiragate: #f59e0b;
+      --bvportage: #ec4899;
+      --bvportageFreelance: #d946ef;
     }
 
     body {
@@ -35,15 +37,22 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      padding-top: 62px;  /* Espace pour le header fixe */
     }
 
     header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       padding: 14px 24px;
       display: flex;
       align-items: center;
       gap: 16px;
+      height: 62px;
     }
 
     header .logo {
@@ -79,6 +88,8 @@
     .app-btn.active.bvbiz    { background: rgba(14,165,233,0.2); color: #38bdf8; }
     .app-btn.active.bvinvest  { background: rgba(16,185,129,0.2); color: #34d399; }
     .app-btn.active.emiragate { background: rgba(245,158,11,0.2); color: #fbbf24; }
+    .app-btn.active.bvportage { background: rgba(236,72,153,0.2); color: #f472b6; }
+    .app-btn.active.bvportageFreelance { background: rgba(217,70,239,0.2); color: #e879f9; }
 
     header .subtitle {
       font-size: 12px;
@@ -104,15 +115,20 @@
     }
 
     main {
-      display: grid;
-      grid-template-columns: 300px 1fr;
-      gap: 0;
+      display: flex;
+      flex-direction: column;
       flex: 1;
       min-height: 0;
+      margin-left: 300px;  /* Espace pour la sidebar fixe */
     }
 
     /* ── Sidebar ── */
     .sidebar {
+      position: fixed;
+      left: 0;
+      top: 62px;  /* Hauteur du header */
+      bottom: 0;
+      width: 300px;
       background: var(--surface);
       border-right: 1px solid var(--border);
       padding: 20px;
@@ -120,6 +136,7 @@
       flex-direction: column;
       gap: 16px;
       overflow-y: auto;
+      z-index: 100;
     }
 
     .sidebar h2 {
@@ -204,6 +221,10 @@
     .btn-primary.bvinvest:hover:not(:disabled)  { background: #10b981; }
     .btn-primary.emiragate { background: #d97706; }
     .btn-primary.emiragate:hover:not(:disabled) { background: #f59e0b; }
+    .btn-primary.bvportage { background: #be185d; }
+    .btn-primary.bvportage:hover:not(:disabled) { background: #ec4899; }
+    .btn-primary.bvportageFreelance { background: #a855f7; }
+    .btn-primary.bvportageFreelance:hover:not(:disabled) { background: #d946ef; }
 
     .btn-ghost {
       background: var(--surface2);
@@ -249,7 +270,9 @@
     .output-panel {
       display: flex;
       flex-direction: column;
+      flex: 1;
       min-height: 0;
+      overflow: hidden;
     }
 
     .tab-bar {
@@ -406,6 +429,8 @@
     <button class="app-btn bvbiz"         id="btnBvbiz"    onclick="switchApp('bvbusiness')">BV Business</button>
     <button class="app-btn bvinvest"      id="btnBvinvest"  onclick="switchApp('bvinvest')">BV Invest</button>
     <button class="app-btn emiragate"     id="btnEmiragate" onclick="switchApp('emiragate')">Emiragate</button>
+    <button class="app-btn bvportage"     id="btnBvportage" onclick="switchApp('bvportage')">BV Portage</button>
+    <button class="app-btn bvportageFreelance" id="btnBvportageFreelance" onclick="switchApp('bvportageFreelance')">BV Portage Freelance</button>
   </div>
 
   <span id="headerSubtitle" class="subtitle">https://dev.bluevaloristech.com</span>
@@ -536,11 +561,36 @@
     'regression':       '🔄 Régression Complète',
   };
 
+  const TESTS_BVPORTAGE = {
+    'e2e-01-signup-activation': 'E2E-01 — Inscription + OTP (Agence)',
+    'e2e-02-login-pack-subscription': 'E2E-02 — Login + Pack 159€',
+    'e2e-03-client-creation': 'E2E-03 — Client + Projet',
+    'e2e-04-mission-contract-kyc': 'E2E-04 — Mission + Contrat + KYC',
+    'e2e-05-contract-signature': 'E2E-05 — Signature Contrat',
+    'e2e-06-invoice-payment': 'E2E-06 — Facturation + Paiement',
+    'e2e-07-team-invitation': 'E2E-07 — Invitation Équipe',
+    'e2e-08-reversal': 'E2E-08 — Reversement',
+  };
+
+  const TESTS_BVPORTAGE_FREELANCE = {
+    'e2e-01-signup-otp': 'E2E-01 — Inscription Freelance + OTP',
+    'e2e-02-pack-subscription': 'E2E-02 — Souscription Pack (79€)',
+    'e2e-03-project-client': 'E2E-03 — Création Projet + Client',
+    'e2e-04-mission-contract-signature': 'E2E-04 — Mission + Contrat + Signature',
+    'e2e-05-kyc-admin-validation': 'E2E-05 — KYC + Validation Admin',
+    'e2e-06-invoice-payment': 'E2E-06 — Facturation + Paiement',
+    'e2e-07-reset-password': 'E2E-07 — Reset Mot de passe',
+    'e2e-08-profile': 'E2E-08 — Gestion Profil',
+    'e2e-09-edge-cases': 'E2E-09 — Cas limites & comptes',
+  };
+
   const APP_META = {
     bvtech:     { label: 'BV Tech',     url: 'https://dev.bluevaloristech.com',          tests: TESTS_BVTECH },
     bvbusiness: { label: 'BV Business', url: 'https://staging.bluevalorisbusiness.com',   tests: TESTS_BVBUSINESS },
     bvinvest:   { label: 'BV Invest',   url: 'https://dev.bluevalorisinvest.com',         tests: TESTS_BVINVEST },
     emiragate:  { label: 'Emiragate',   url: 'https://dev.bluevalorisinstall.com',        tests: TESTS_EMIRAGATE },
+    bvportage:  { label: 'BV Portage',  url: 'https://dev.bluevalorisportage.com',       tests: TESTS_BVPORTAGE },
+    bvportageFreelance: { label: 'BV Portage Freelance', url: 'https://dev.bluevalorisportage.com', tests: TESTS_BVPORTAGE_FREELANCE },
   };
 
   // ── État ──
@@ -551,12 +601,15 @@
   let stats         = { total: 0, pass: 0, fail: 0 };
   let autoScroll    = true;
   let es            = null;
+  let isRunning     = false;
 
   const appStates = {
     bvtech:     createAppState(),
     bvbusiness: createAppState(),
     bvinvest:   createAppState(),
     emiragate:  createAppState(),
+    bvportage:  createAppState(),
+    bvportageFreelance: createAppState(),
   };
 
   function createAppState() {
@@ -615,6 +668,10 @@
     document.getElementById('btnBvinvest').classList.toggle('bvinvest', app === 'bvinvest');
     document.getElementById('btnEmiragate').classList.toggle('active', app === 'emiragate');
     document.getElementById('btnEmiragate').classList.toggle('emiragate', app === 'emiragate');
+    document.getElementById('btnBvportage').classList.toggle('active', app === 'bvportage');
+    document.getElementById('btnBvportage').classList.toggle('bvportage', app === 'bvportage');
+    document.getElementById('btnBvportageFreelance').classList.toggle('active', app === 'bvportageFreelance');
+    document.getElementById('btnBvportageFreelance').classList.toggle('bvportageFreelance', app === 'bvportageFreelance');
 
     // Sous-titre URL
     document.getElementById('headerSubtitle').textContent = APP_META[app].url;
@@ -624,6 +681,8 @@
     btnRun.classList.toggle('bvbiz', app === 'bvbusiness');
     btnRun.classList.toggle('bvinvest', app === 'bvinvest');
     btnRun.classList.toggle('emiragate', app === 'emiragate');
+    btnRun.classList.toggle('bvportage', app === 'bvportage');
+    btnRun.classList.toggle('bvportageFreelance', app === 'bvportageFreelance');
 
     buildTestList();
     restoreCurrentAppState();
@@ -636,16 +695,20 @@
     const tests = APP_META[currentApp].tests;
     const list = document.getElementById('testList');
     list.innerHTML = '';
+    let isFirst = true;
     Object.entries(tests).forEach(([key, label]) => {
       const item = document.createElement('div');
       item.className = 'test-item';
       item.dataset.key = key;
+      // Par défaut : cocher le premier test seulement
+      const checked = isFirst ? 'checked' : '';
       item.innerHTML = `
-        <input type="checkbox" id="cb_${key}" checked />
+        <input type="checkbox" id="cb_${key}" ${checked} />
         <label for="cb_${key}">${label}</label>
         <span class="result-badge" id="badge_${key}"></span>
       `;
       list.appendChild(item);
+      isFirst = false;
     });
   }
 
@@ -811,14 +874,22 @@
 
   // ── Lancer / Arrêter ──
   async function startTests() {
+    if (isRunning) {
+      alert('❌ Un test est déjà en cours. Veuillez attendre la fin avant de relancer.');
+      return;
+    }
+
     const selected = Array.from(document.querySelectorAll('.test-item input:checked'))
       .map(cb => cb.id.replace('cb_', ''));
 
     if (selected.length === 0) {
-      alert('Veuillez sélectionner au moins un test.');
+      alert('⚠️ Veuillez sélectionner au least un test.');
       return;
     }
 
+    isRunning = true;
+    setRunningState(true);
+    
     await fetch('/run', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -827,7 +898,41 @@
   }
 
   async function stopTests() {
-    await fetch('/stop', { method: 'POST' });
+    if (!isRunning) {
+      alert('❌ Aucun test en cours.');
+      return;
+    }
+    
+    // Arrêter immédiatement côté client
+    setRunningState(false);
+    appendLine('warn', '⏹ Arrêt des tests en cours...');
+    
+    // Notifier le serveur
+    try {
+      await fetch('/stop', { method: 'POST' });
+    } catch (e) {
+      console.error('Erreur lors de l\'arrêt:', e);
+    }
+  }
+
+  function setRunningState(running) {
+    const btnRun = document.getElementById('btnRun');
+    const btnStop = document.getElementById('btnStop');
+    const testList = document.getElementById('testList');
+    const appButtons = document.querySelectorAll('.app-btn');
+    
+    isRunning = running;
+    btnRun.disabled = running;
+    btnStop.disabled = !running;  // ✓ Correct: Arrêter activé pendant les tests, désactivé après
+    testList.style.opacity = running ? '0.5' : '1';
+    testList.style.pointerEvents = running ? 'none' : 'auto';
+    
+    // Désactiver tous les boutons d'app pendant qu'un test s'exécute
+    appButtons.forEach(btn => {
+      btn.disabled = running;
+      btn.style.opacity = running ? '0.5' : '1';
+      btn.style.cursor = running ? 'not-allowed' : 'pointer';
+    });
   }
 
   // ── Auto-scroll ──
@@ -871,6 +976,8 @@
         .replace(/-bvbusiness-(admin|public|login-flow|regression|packages-public)$/, '')
         .replace(/-bvinvest-(admin|client|public|regression)$/, '')
         .replace(/-emiragate-(admin|client|public|regression)$/, '')
+        .replace(/-bvportage-(admin|agency|client|public|regression)$/, '')
+        .replace(/-bvportage-freelance-(admin|freelance|client|public|regression)$/, '')
         .replace(/^e2e-\d+-[^-]+-/, '')
         .replace(/-/g, ' ')
         .replace(/[a-f0-9]{5,}/g, '')
