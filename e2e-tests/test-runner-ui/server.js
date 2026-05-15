@@ -148,8 +148,14 @@ function classifyLine(line) {
   return 'info';
 }
 
-function makeRunOutputDir() {
-  const runName = `ui-run-${Date.now()}`;
+function appKeyToSlug(appKey) {
+  // Convertir camelCase en kebab-case : bvportageFreelance → bvportage-freelance
+  return appKey.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+function makeRunOutputDir(appKey) {
+  const slug = appKeyToSlug(appKey);
+  const runName = `ui-run-${slug}-${Date.now()}`;
   return path.join('test-results', runName);
 }
 
@@ -185,7 +191,7 @@ function runTests(selectedTests, app) {
   testsStopped = false;  // Réinitialiser le flag
   sendToAllClients({ type: 'start', message: `🚀 Démarrage des tests ${appLabel}...` });
 
-  const outputDir = makeRunOutputDir();
+  const outputDir = makeRunOutputDir(appKey);
   const args = [
     'playwright', 'test',
     '--config', config,
@@ -360,31 +366,62 @@ const server = http.createServer((req, res) => {
     const appFilter = parsed.query.app || null; // 'bvtech' | 'bvbusiness' | null
 
     const found = [];
-    function collectFailureDir(dir, relativeName) {
-      if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) return;
-      const files = fs.readdirSync(dir);
-      const hasPng = files.find(f => f.endsWith('.png'));
-      const hasVideo = files.find(f => f.endsWith('.webm'));
-      const hasMd = files.find(f => f.endsWith('.md'));
-      if (!hasPng && !hasVideo) return;
-      const name = relativeName.replace(/\\/g, '/');
-      if (appFilter === 'bvtech'            && !name.includes('-bvtech-'))            return;
-      if (appFilter === 'bvbusiness'         && !name.includes('-bvbusiness-'))         return;
-      if (appFilter === 'bvinvest'           && !name.includes('-bvinvest-'))           return;
-      if (appFilter === 'emiragate'          && !name.includes('-emiragate-'))          return;
-      if (appFilter === 'bvportage'          && (!name.includes('-bvportage-') || name.includes('-bvportage-freelance-'))) return;
-      if (appFilter === 'bvportageFreelance' && !name.includes('-bvportage-freelance-')) return;
-      found.push({ name, hasPng: !!hasPng, hasVideo: !!hasVideo, hasMd: !!hasMd });
+
+    // Vérifie si un dossier ui-run-* correspond à l'app filtrée
+    // Le nom du dossier est maintenant : ui-run-{appKey}-{timestamp}
+    // ou pour l'ancien format (rétro-compat) : ui-run-{timestamp}
+    function runDirMatchesApp(runDirName, filter) {
+      if (!filter) return true;
+      const n = runDirName.replace(/\\/g, '/');
+      // Format : ui-run-{appSlug}-{timestamp} (ex: ui-run-bvportage-freelance-1234567)
+      if (filter === 'bvportageFreelance') return /^ui-run-bvportage-freelance-\d/.test(n);
+      if (filter === 'bvportage')          return /^ui-run-bvportage-\d/.test(n);
+      if (filter === 'bvtech')             return /^ui-run-bvtech-\d/.test(n);
+      if (filter === 'bvbusiness')         return /^ui-run-bvbusiness-\d/.test(n);
+      if (filter === 'bvinvest')           return /^ui-run-bvinvest-\d/.test(n);
+      if (filter === 'emiragate')          return /^ui-run-emiragate-\d/.test(n);
+      return false;
     }
 
-    fs.readdirSync(TEST_RESULTS_DIR).forEach(name => {
-      const dir = path.join(TEST_RESULTS_DIR, name);
-      if (!fs.statSync(dir).isDirectory()) return;
-      collectFailureDir(dir, name);
-      fs.readdirSync(dir).forEach(child => {
-        const childDir = path.join(dir, child);
+    // Pour rétro-compatibilité : ancien format ui-run-{timestamp} sans appKey
+    function legacyNameMatchesApp(name, filter) {
+      if (!filter) return true;
+      const n = name.replace(/\\/g, '/');
+      if (filter === 'bvtech'            && n.includes('-bvtech-'))            return true;
+      if (filter === 'bvbusiness'         && n.includes('-bvbusiness-'))         return true;
+      if (filter === 'bvinvest'           && n.includes('-bvinvest-'))           return true;
+      if (filter === 'emiragate'          && n.includes('-emiragate-'))          return true;
+      if (filter === 'bvportage'          && n.includes('-bvportage-') && !n.includes('-bvportage-freelance-')) return true;
+      if (filter === 'bvportageFreelance' && n.includes('-bvportage-freelance-')) return true;
+      return false;
+    }
+
+    fs.readdirSync(TEST_RESULTS_DIR).forEach(runDirName => {
+      const runDir = path.join(TEST_RESULTS_DIR, runDirName);
+      if (!fs.statSync(runDir).isDirectory()) return;
+
+      const isNewFormat = /^ui-run-[a-z]/.test(runDirName); // ui-run-bvtech-... vs ui-run-1234567...
+      const parentMatches = !appFilter || runDirMatchesApp(runDirName, appFilter);
+
+      // Parcourir les sous-dossiers (dossiers de tests en échec)
+      fs.readdirSync(runDir).forEach(child => {
+        const childDir = path.join(runDir, child);
         if (!fs.existsSync(childDir) || !fs.statSync(childDir).isDirectory()) return;
-        collectFailureDir(childDir, path.join(name, child));
+
+        const files = fs.readdirSync(childDir);
+        const hasPng   = files.find(f => f.endsWith('.png'));
+        const hasVideo  = files.find(f => f.endsWith('.webm'));
+        const hasMd     = files.find(f => f.endsWith('.md'));
+        if (!hasPng && !hasVideo) return;
+
+        const relName = path.join(runDirName, child).replace(/\\/g, '/');
+
+        // Appliquer le filtre :
+        // - Nouveau format (ui-run-{appSlug}-{timestamp}) → afficher seulement si l'app correspond
+        // - Ancien format (ui-run-{timestamp}) → sans info d'app, masquer si un filtre est actif
+        if (appFilter && (!isNewFormat || !parentMatches)) return;
+
+        found.push({ name: relName, hasPng: !!hasPng, hasVideo: !!hasVideo, hasMd: !!hasMd });
       });
     });
 
@@ -412,6 +449,14 @@ const server = http.createServer((req, res) => {
     function matchesApp(name, filter) {
       if (filter === 'all') return true;
       const n = name.replace(/\\/g, '/');
+      // Nouveau format : ui-run-{appSlug}-{timestamp}
+      if (filter === 'bvportageFreelance' && /^ui-run-bvportage-freelance-\d/.test(n)) return true;
+      if (filter === 'bvportage'          && /^ui-run-bvportage-\d/.test(n))           return true;
+      if (filter === 'bvtech'             && /^ui-run-bvtech-\d/.test(n))              return true;
+      if (filter === 'bvbusiness'         && /^ui-run-bvbusiness-\d/.test(n))          return true;
+      if (filter === 'bvinvest'           && /^ui-run-bvinvest-\d/.test(n))            return true;
+      if (filter === 'emiragate'          && /^ui-run-emiragate-\d/.test(n))           return true;
+      // Ancien format (rétro-compat) : nom contenant le pattern d'app
       if (filter === 'bvtech'            && n.includes('-bvtech-') && !n.includes('-bvbusiness-') && !n.includes('-bvinvest-')) return true;
       if (filter === 'bvbusiness'         && n.includes('-bvbusiness-'))         return true;
       if (filter === 'bvinvest'           && n.includes('-bvinvest-'))           return true;
