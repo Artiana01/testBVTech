@@ -1,11 +1,14 @@
 /**
  * playwright.bvportage.config.ts
- * Configuration Playwright spécifique pour BV Portage
+ * Configuration Playwright spécifique pour BV Portage (Agence)
  */
 import { defineConfig, devices } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
+// Charger d'abord le .env spécifique BV Portage (priorité sur le .env racine)
+dotenv.config({ path: path.resolve(__dirname, 'apps/bvportage/.env'), override: true });
+// Fallback sur le .env racine si une variable manque
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 export default defineConfig({

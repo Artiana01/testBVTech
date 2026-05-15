@@ -1,16 +1,16 @@
 import { test as base, Page } from '@playwright/test';
-import { LoginPage } from './pages/common/LoginPage';
-import { SignupPage } from './pages/common/SignupPage';
-import { DashboardFreelancePage } from './pages/freelance/DashboardFreelancePage';
-import { PackPage } from './pages/freelance/PackPage';
-import { ClientPage } from './pages/freelance/ClientPage';
-import { ProjectPage } from './pages/freelance/ProjectPage';
-import { MissionPage } from './pages/freelance/MissionPage';
-import { ContractPage } from './pages/freelance/ContractPage';
-import { KycPage } from './pages/freelance/KycPage';
-import { InvoicePage } from './pages/freelance/InvoicePage';
-import { ProfilePage } from './pages/freelance/ProfilePage';
-import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
+import { LoginPage } from '../pages/common/LoginPage';
+import { SignupPage } from '../pages/common/SignupPage';
+import { DashboardFreelancePage } from '../pages/freelance/DashboardFreelancePage';
+import { PackPage } from '../pages/freelance/PackPage';
+import { ClientPage } from '../pages/freelance/ClientPage';
+import { ProjectPage } from '../pages/freelance/ProjectPage';
+import { MissionPage } from '../pages/freelance/MissionPage';
+import { ContractPage } from '../pages/freelance/ContractPage';
+import { KycPage } from '../pages/freelance/KycPage';
+import { InvoicePage } from '../pages/freelance/InvoicePage';
+import { ProfilePage } from '../pages/freelance/ProfilePage';
+import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
 
 type Pages = {
   loginPage: LoginPage;

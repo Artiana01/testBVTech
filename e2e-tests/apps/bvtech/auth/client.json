@@ -1,6 +1,16 @@
 {
   "cookies": [
     {
+      "name": "KEYCLOAK_3P_COOKIE_SAMESITE",
+      "value": "supported",
+      "domain": "keycloak.bluevaloris.com",
+      "path": "/realms/bluevaloris/protocol/openid-connect/3p-cookies",
+      "expires": 1778845419.811944,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
       "name": "NEXT_LOCALE",
       "value": "fr",
       "domain": "dev.bluevaloristech.com",
@@ -12,20 +22,20 @@
     },
     {
       "name": "session_user",
-      "value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7ImlkIjo4LCJuYW1lIjoiUGVyc2lzdCBwLTkwNTg4MyBwLTc1MTMwOSBwLTc2ODQ4NiBwLTEwMjY4OCBwLTU0MDA5NiBwLTA0NDgzMyBwLTkyNjg0NyBwLTA4MDkxMyBwLTM5MjczMiBwLTk5NDkyMSBwLTIwNDg0OSBwLTQ3NDM2NCBwLTQyNDIzOSBwLTk2NzY0NSIsImVtYWlsIjoiZGlhcnlAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWRfYXQiOiIyMDI2LTA0LTIxVDE3OjE0OjAwLjAwMDAwMFoiLCJjcmVhdGVkX2F0IjoiMjAyNi0wNC0yMVQxNzoxNDo0NS4wMDAwMDBaIiwidXBkYXRlZF9hdCI6IjIwMjYtMDUtMDdUMDk6MjU6MzIuMDAwMDAwWiIsInR3b19mYWN0b3Jfc2VjcmV0IjpudWxsLCJ0d29fZmFjdG9yX3JlY292ZXJ5X2NvZGVzIjpudWxsLCJ0d29fZmFjdG9yX2NvbmZpcm1lZF9hdCI6bnVsbCwicm9sZSI6IlJPTEVfVVNFUiIsIm51bWJlclBob25lIjpudWxsLCJhZGRyZXNzIjpudWxsLCJjb21wYW55IjpudWxsLCJnb29nbGVfaWQiOm51bGwsImF2YXRhciI6bnVsbCwibG9naW5fYXR0ZW1wdHMiOjMwLCJibG9ja2VkX2F0IjpudWxsLCJkZWxldGVkX2F0IjpudWxsLCJpc19hbm9ueW1pemVkIjpmYWxzZSwiYW5vbnltaXplZF9uYW1lIjpudWxsLCJhbm9ueW1pemVkX2VtYWlsIjpudWxsLCJpc19lbXBsb3llZSI6ZmFsc2UsImF2YXRhcl91cmwiOm51bGx9LCJleHBpcmVzIjoiMjAyNi0wNS0wN1QxMDo0MTo1Ni43ODBaIiwiaWF0IjoxNzc4MTQ2OTE2LCJleHAiOjE3NzgxNTA1MTZ9.HzEgi9tNqHvNnjWBcxclKsJEXiFkxI3Ju1gAaYjjxBw",
+      "value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjp7ImlkIjo4LCJuYW1lIjoiUGVyc2lzdCBwLTM4MDg3NCBwLTQ1NzAxMyBwLTkzMTUzMiBwLTkwNTg4MyBwLTc1MTMwOSBwLTc2ODQ4NiBwLTEwMjY4OCBwLTU0MDA5NiBwLTA0NDgzMyBwLTkyNjg0NyBwLTA4MDkxMyBwLTM5MjczMiBwLTk5NDkyMSBwLTIwNDg0OSBwLTQ3NDM2NCBwLTQyNDIzOSBwLTk2NzY0NSIsImVtYWlsIjoiZGlhcnlAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWRfYXQiOiIyMDI2LTA0LTIxVDE3OjE0OjAwLjAwMDAwMFoiLCJjcmVhdGVkX2F0IjoiMjAyNi0wNC0yMVQxNzoxNDo0NS4wMDAwMDBaIiwidXBkYXRlZF9hdCI6IjIwMjYtMDUtMTNUMTM6NDI6MTUuMDAwMDAwWiIsInR3b19mYWN0b3Jfc2VjcmV0IjpudWxsLCJ0d29fZmFjdG9yX3JlY292ZXJ5X2NvZGVzIjpudWxsLCJ0d29fZmFjdG9yX2NvbmZpcm1lZF9hdCI6bnVsbCwicm9sZSI6IlJPTEVfVVNFUiIsIm51bWJlclBob25lIjpudWxsLCJhZGRyZXNzIjpudWxsLCJjb21wYW55IjpudWxsLCJnb29nbGVfaWQiOm51bGwsImF2YXRhciI6bnVsbCwibG9naW5fYXR0ZW1wdHMiOjM0LCJibG9ja2VkX2F0IjpudWxsLCJkZWxldGVkX2F0IjpudWxsLCJpc19hbm9ueW1pemVkIjpmYWxzZSwiYW5vbnltaXplZF9uYW1lIjpudWxsLCJhbm9ueW1pemVkX2VtYWlsIjpudWxsLCJpc19lbXBsb3llZSI6ZmFsc2UsImF2YXRhcl91cmwiOm51bGx9LCJleHBpcmVzIjoiMjAyNi0wNS0xNVQxMjo0Mjo0Mi43MzJaIiwiaWF0IjoxNzc4ODQ1MzYyLCJleHAiOjE3Nzg4NDg5NjJ9.WDPncHmXelxzaG1oqWhUMWHnAQsleOvo5mJ88pRujGs",
       "domain": "dev.bluevaloristech.com",
       "path": "/",
-      "expires": 1778150508.719014,
+      "expires": 1778848960.806207,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "token",
-      "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXBpLWRldi5ibHVldmFsb3Jpc3RlY2guY29tL2FwaS9sb2dpbiIsImlhdCI6MTc3ODE0NjkxNiwiZXhwIjoxNzc4MTUwNTE2LCJuYmYiOjE3NzgxNDY5MTYsImp0aSI6IlhyQWUxaEdXYkhZdFJqcUsiLCJzdWIiOiI4IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsInJvbGUiOiJST0xFX1VTRVIifQ.jbH2CPOAYpUvtwxpZAkHutYS44oHnSehcbcKBWGMvDA",
+      "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vYXBpLWRldi5ibHVldmFsb3Jpc3RlY2guY29tL2FwaS9sb2dpbiIsImlhdCI6MTc3ODg0NTM2MiwiZXhwIjoxNzc4ODQ4OTYyLCJuYmYiOjE3Nzg4NDUzNjIsImp0aSI6IlFLQ2ZLdFN3YjhYdXM5SGUiLCJzdWIiOiI4IiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyIsInJvbGUiOiJST0xFX1VTRVIifQ.E-7QZ2NssD2QRlK74rjtVm_BkKxr6Gh12DXtrFgtFKM",
       "domain": "dev.bluevaloristech.com",
       "path": "/",
-      "expires": 1778150508.719742,
+      "expires": 1778848960.806294,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Lax"

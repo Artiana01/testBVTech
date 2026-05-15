@@ -370,3 +370,67 @@ Si le fichier n'existe pas :
 cp .env.example .env
 # Remplir les valeurs dans .env
 ```
+
+---
+
+## 11. Gestion de l'historique des tests
+
+Pour maintenir le projet propre et éviter l'accumulation de données inutiles, utilisez les outils de nettoyage.
+
+### Afficher les statistiques
+
+```bash
+npm run stats
+```
+
+Affiche la taille totale des rapports et résultats, ainsi que l'ancienneté des fichiers.
+
+### Nettoyer l'historique - Mode Interactif
+
+```bash
+npm run clean
+```
+
+Menu interactif avec options pour nettoyer :
+- Tous les rapports HTML
+- Tous les résultats de tests  
+- Tout nettoyer
+- Nettoyage personnalisé
+
+### Nettoyer l'historique - Mode Automatisé
+
+```bash
+# Nettoie TOUT (rapports + résultats)
+npm run clean:all
+
+# Nettoie uniquement les rapports
+npm run clean:reports
+
+# Nettoie uniquement les résultats  
+npm run clean:results
+```
+
+### Cas d'usage recommandés
+
+**Avant une session de test importante :**
+```bash
+npm run clean:all && npm run test:bvtech
+```
+
+**En CI/CD (pipeline automatisé) :**
+```bash
+npm run clean:all
+npm run test:bvtech
+# Autres étapes de pipeline...
+```
+
+**Consultation de rapport** :
+```bash
+npm run clean:reports
+npm run test:bvtech
+npm run test:report
+```
+
+Pour plus de détails, consultez le guide complet : [HISTORY_CLEANUP.md](./HISTORY_CLEANUP.md)
+
+---

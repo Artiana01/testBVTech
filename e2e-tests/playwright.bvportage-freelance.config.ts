@@ -1,4 +1,15 @@
+/**
+ * playwright.bvportage-freelance.config.ts
+ * Configuration Playwright spécifique pour BV Portage Freelance
+ */
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Charger d'abord le .env spécifique BV Portage Freelance (priorité sur le .env racine)
+dotenv.config({ path: path.resolve(__dirname, 'apps/bvportage-freelance/.env'), override: true });
+// Fallback sur le .env racine si une variable manque
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 export default defineConfig({
   testDir: './apps/bvportage-freelance/tests',
@@ -6,23 +17,33 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
   workers: 1,
+
+  timeout: 60_000,
+  expect: {
+    timeout: 10_000,
+  },
+
   reporter: [
-    ['html', { outputFolder: 'playwright-report-bvportage-freelance' }],
     ['list'],
+    ['html', { outputFolder: 'playwright-report-bvportage-freelance', open: 'never' }],
     ['json', { outputFile: 'test-results/results-bvportage-freelance.json' }],
   ],
+
   use: {
     baseURL: process.env.BASE_URL || 'https://dev.bluevalorisportage.com',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
+
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  globalSetup: require.resolve('./apps/bvportage-freelance/fixtures/global-setup.ts'),
+
+  globalSetup: require.resolve('./apps/bvportage-freelance/fixtures/global-setup'),
+
   webServer: undefined,
 });

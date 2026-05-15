@@ -368,10 +368,12 @@ const server = http.createServer((req, res) => {
       const hasMd = files.find(f => f.endsWith('.md'));
       if (!hasPng && !hasVideo) return;
       const name = relativeName.replace(/\\/g, '/');
-      if (appFilter === 'bvtech'     && !name.includes('-bvtech-'))     return;
-      if (appFilter === 'bvbusiness' && !name.includes('-bvbusiness-')) return;
-      if (appFilter === 'bvinvest'   && !name.includes('-bvinvest-'))   return;
-      if (appFilter === 'emiragate'  && !name.includes('-emiragate-'))  return;
+      if (appFilter === 'bvtech'            && !name.includes('-bvtech-'))            return;
+      if (appFilter === 'bvbusiness'         && !name.includes('-bvbusiness-'))         return;
+      if (appFilter === 'bvinvest'           && !name.includes('-bvinvest-'))           return;
+      if (appFilter === 'emiragate'          && !name.includes('-emiragate-'))          return;
+      if (appFilter === 'bvportage'          && (!name.includes('-bvportage-') || name.includes('-bvportage-freelance-'))) return;
+      if (appFilter === 'bvportageFreelance' && !name.includes('-bvportage-freelance-')) return;
       found.push({ name, hasPng: !!hasPng, hasVideo: !!hasVideo, hasMd: !!hasMd });
     }
 
@@ -387,6 +389,93 @@ const server = http.createServer((req, res) => {
     });
 
     res.end(JSON.stringify(found.reverse()));
+    return;
+  }
+
+  // === DELETE /clear-history?app=... : supprimer l'historique filtré par app ===
+  if (req.method === 'DELETE' && parsed.pathname === '/clear-history') {
+    const appFilter = parsed.query.app || null;
+    const ALLOWED_APPS = ['bvtech', 'bvbusiness', 'bvinvest', 'emiragate', 'bvportage', 'bvportageFreelance', 'all'];
+
+    if (!appFilter || !ALLOWED_APPS.includes(appFilter)) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: 'Paramètre app invalide' }));
+      return;
+    }
+
+    if (!fs.existsSync(TEST_RESULTS_DIR)) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, deleted: 0 }));
+      return;
+    }
+
+    function matchesApp(name, filter) {
+      if (filter === 'all') return true;
+      const n = name.replace(/\\/g, '/');
+      if (filter === 'bvtech'            && n.includes('-bvtech-') && !n.includes('-bvbusiness-') && !n.includes('-bvinvest-')) return true;
+      if (filter === 'bvbusiness'         && n.includes('-bvbusiness-'))         return true;
+      if (filter === 'bvinvest'           && n.includes('-bvinvest-'))           return true;
+      if (filter === 'emiragate'          && n.includes('-emiragate-'))          return true;
+      if (filter === 'bvportage'          && n.includes('-bvportage-') && !n.includes('-bvportage-freelance-')) return true;
+      if (filter === 'bvportageFreelance' && n.includes('-bvportage-freelance-')) return true;
+      return false;
+    }
+
+    let deleted = 0;
+    try {
+      const entries = fs.readdirSync(TEST_RESULTS_DIR);
+      entries.forEach(name => {
+        const dir = path.join(TEST_RESULTS_DIR, name);
+        if (!fs.statSync(dir).isDirectory()) return;
+
+        // Vérifier le dossier racine
+        if (matchesApp(name, appFilter)) {
+          fs.rmSync(dir, { recursive: true, force: true });
+          deleted++;
+          return;
+        }
+
+        // Vérifier les sous-dossiers (ui-run-* contient des sous-dossiers par test)
+        if (fs.existsSync(dir) && fs.statSync(dir).isDirectory()) {
+          const children = fs.readdirSync(dir);
+          let allChildrenDeleted = true;
+          let childDeletedCount = 0;
+
+          children.forEach(child => {
+            const childDir = path.join(dir, child);
+            if (!fs.existsSync(childDir) || !fs.statSync(childDir).isDirectory()) {
+              allChildrenDeleted = false;
+              return;
+            }
+            const childRelName = path.join(name, child);
+            if (matchesApp(childRelName, appFilter)) {
+              fs.rmSync(childDir, { recursive: true, force: true });
+              childDeletedCount++;
+            } else {
+              allChildrenDeleted = false;
+            }
+          });
+
+          deleted += childDeletedCount;
+
+          // Si le dossier parent est maintenant vide, le supprimer aussi
+          if (allChildrenDeleted && childDeletedCount > 0 && fs.existsSync(dir)) {
+            const remaining = fs.readdirSync(dir);
+            if (remaining.length === 0) {
+              fs.rmSync(dir, { recursive: true, force: true });
+            }
+          }
+        }
+      });
+
+      console.log(`[clear-history] app=${appFilter} → ${deleted} dossier(s) supprimé(s)`);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, deleted }));
+    } catch (e) {
+      console.error('[clear-history] Erreur:', e.message);
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: e.message }));
+    }
     return;
   }
 

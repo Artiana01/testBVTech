@@ -1,8 +1,29 @@
 node_modules/
 .env
-apps/bvtech/.env
-apps/bvtech/auth/
+apps/*/auth/
+apps/*/.env
+
+# Test Reports and Results
 test-results/
 playwright-report/
+playwright-report-*/
+
+# App-specific reports
 playwright-report-bvtech/
+playwright-report-bvbusiness/
+playwright-report-bvinvest/
+playwright-report-emiragate/
+playwright-report-bvportage/
+playwright-report-bvportage-freelance/
+
+# Archives and temporary files
 *.zip
+archived-reports/
+.last-run.json
+
+# OS and IDE files
+.DS_Store
+.vscode/settings.json
+*.swp
+*.swo
+*~
